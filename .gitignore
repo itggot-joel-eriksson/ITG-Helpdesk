@@ -484,3 +484,6 @@ paket-files/
 
 # sftp configuration file
 sftp-config.json
+
+# BitTorrent Sync
+.sync/

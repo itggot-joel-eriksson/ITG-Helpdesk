@@ -2,7 +2,7 @@ class App < Sinatra::Base
   enable :sessions
 
   get '/' do
-  	"Hello, Sinatra!"
+	  "Hello, Sinatra!"
   end
 
 
