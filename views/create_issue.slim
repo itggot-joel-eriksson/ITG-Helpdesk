@@ -1,0 +1,16 @@
+.card-wide.mdl-card.mdl-shadow--2dp
+    .mdl-card__title
+        h2.mdl-card__title-text Create issue
+    .mdl-card__supporting-text
+        form action="/create/issue" method="post"
+            .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
+                input.mdl-textfield__input type="text" name="title"
+                label.mdl-textfield__label Title
+            .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
+                textarea.mdl-textfield__input type="text" rows="1" name="description"
+                label.mdl-textfield__label Description
+            br
+            button.mdl-button.mdl-js-button.mdl-js-ripples.mdl-button--raised.mdl-button--accent
+                | Create issue
+    .mdl-card__menu
+        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect

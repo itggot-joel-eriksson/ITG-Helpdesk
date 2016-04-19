@@ -1,0 +1,52 @@
+html
+    head
+        meta charset="utf-8"
+        meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        title ITG-Helpdesk
+
+        script src="/js/mdl.min.js"
+
+        link rel="stylesheet" href="/css/style.css"
+    body
+        .mdl-layout.mdl-js-layout.mdl-layout--fixed-header
+            header.mdl-layout__header
+                .mdl-layout__header-row
+                    span.mdl-layout-title
+                        a href="/"
+                            img.logo src="/img/itg_logo.svg"
+                    .mdl-layout-spacer
+                    nav.mdl-navigation.mdl-layout--large-screen-only
+                        / a.mdl-navigation__link href="" Link
+                        / a.mdl-navigation__link href="" Link
+                        a.mdl-navigation__link href="/issues" Issues
+                        a.mdl-navigation__link href="/faq" FAQ
+                        button.mdl-button.mdl-js-button.mdl-button--icon.mdl-js-ripple-effect#avatar-menu-lower-right
+                            img src="https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067" style="height: 100%;"
+
+                        ul.mdl-menu.mdl-menu--bottom-right.mdl-js-menu.mdl-js-ripple-effect for="avatar-menu-lower-right"
+                            li.mdl-menu__item.mdl-menu__item--full-bleed-divider Settings
+                            li.mdl-menu__item Sign out
+            .mdl-layout__drawer
+                span.mdl-layout-title
+                    img.logo src="/img/itg_logo.svg"
+                nav.mdl-navigation
+                    a.mdl-navigation__link href="/issues" Issues
+                    a.mdl-navigation__link href="/faq" FAQ
+
+                    a.mdl-navigation__link href="/settings" Settings
+                    a.mdl-navigation__link href="" Sign out
+            main.mdl-layout__content
+                .page-content
+                    == yield
+
+                    a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored#create-issue href="/create/issue"
+                        i.material-icons add
+
+                footer.mdl-mini-footer
+                    .mdl-mini-footer__left-section
+                        .mdl-logo ITG-Helpdesk
+                        ul.mdl-mini-footer__link-list
+                            li
+                                a href="#" Help
+                            li
+                                a href="#" Privacy & Terms

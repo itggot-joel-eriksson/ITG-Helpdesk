@@ -487,3 +487,9 @@ sftp-config.json
 
 # BitTorrent Sync
 .sync/
+
+#SQLite
+*.sqlite
+
+#wiki files
+wiki_files/

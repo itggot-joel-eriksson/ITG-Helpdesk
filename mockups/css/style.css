@@ -1,0 +1,15 @@
+@charset "UTF-8";
+@import url("https://resources.fam-ericsson.se/fonts/blokk.css");
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    padding-top: 70px;
+}
+
+body:not(nav *) {
+    font-family: "Blokk font", sans-serif !important;
+}

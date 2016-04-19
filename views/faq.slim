@@ -1,0 +1,14 @@
+.card-wide.mdl-card.mdl-shadow--2dp
+    .mdl-card__title
+        h2.mdl-card__title-text FAQ
+    .mdl-card__supporting-text
+        .mdl-list
+            - for article in @articles
+                .mdl-list__item
+                    span.mdl-list__item-primary-content
+                        i.material-icons.mdl-list__item-avatar person
+                        a href="view/faq/#{article.id}" = article.question
+                    a.mdl-list__item-secondary-action href="#"
+                        i.material-icons star
+    .mdl-card__menu
+        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect
