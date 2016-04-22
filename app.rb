@@ -11,7 +11,7 @@ class App < Sinatra::Base
     end
 
     get "/view/issue/:issue" do |issue|
-        @issue = Issue.first(id: issue)
+        @issue = Issue.first(uuid: issue)
         unless @issue
             status 404
             body "Uh-oh 404!"
@@ -30,12 +30,18 @@ class App < Sinatra::Base
     end
 
     get "/faq" do
-        @articles = FAQ.all
+        @articles = Faq.all
         slim :faq
     end
 
-    get "/view/faq/:article" do |article|
-        @article = FAQ.first(id: article)
+    get "/view/faq/:uuid" do |uuid|
+        begin
+            @article = Faq.first(uuid: uuid)
+        rescue ArgumentError
+            status 500
+            slim :error
+        end
+
         unless @article
             status 404
             slim :error

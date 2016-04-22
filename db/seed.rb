@@ -1,9 +1,19 @@
 class Seeder
 
 	def self.seed!
+		self.users!
 		self.categories!
 		self.issues!
 		self.faq_articles!
+		self.uploads!
+	end
+
+	def self.users!
+		User.create email: "hanna.nystrom@itggot.se"
+		User.create email: "philip.lund@itggot.se"
+		User.create email: "teddy.henriksson@itggot.se"
+		User.create email: "lydia.hedlund@itggot.se"
+		User.create email: "eddie.lindgren@itggot.se"
 	end
 
 	def self.categories!
@@ -22,7 +32,13 @@ class Seeder
 	end
 
 	def self.faq_articles!
-		FAQ.create question: "Hej", answer: "Då-re", user_id: 1
+		Faq.create question: "Hej", answer: "Då-re", user_id: 1
+	end
+
+	def self.uploads!
+		Upload.create
+		Upload.create
+		Upload.create
 	end
 
 end
