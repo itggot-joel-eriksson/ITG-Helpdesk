@@ -1,23 +1,27 @@
+/ doctype html
 html
     head
         meta charset="utf-8"
         meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         title ITG-Helpdesk
 
+        script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"
         script src="/js/mdl.min.js"
+        script src="/js/autogrow.min.js"
+        script src="/js/sweetalert.min.js"
+        script src="/js/main.js"
 
-        link rel="stylesheet" href="/css/style.css"
+        link rel="stylesheet" href="/css/style.css" /
     body
         .mdl-layout.mdl-js-layout.mdl-layout--fixed-header
             header.mdl-layout__header
                 .mdl-layout__header-row
                     span.mdl-layout-title
-                        a href="/"
-                            img.logo src="/img/itg_logo.svg"
+                        a.link--no-styling href="/"
+                            / img.logo src="/img/itg_logo.svg"
+                            | ITG-Helpdesk
                     .mdl-layout-spacer
                     nav.mdl-navigation.mdl-layout--large-screen-only
-                        / a.mdl-navigation__link href="" Link
-                        / a.mdl-navigation__link href="" Link
                         a.mdl-navigation__link href="/issues" Issues
                         a.mdl-navigation__link href="/faq" FAQ
                         button.mdl-button.mdl-js-button.mdl-button--icon.mdl-js-ripple-effect#avatar-menu-lower-right
@@ -28,13 +32,21 @@ html
                             li.mdl-menu__item Sign out
             .mdl-layout__drawer
                 span.mdl-layout-title
-                    img.logo src="/img/itg_logo.svg"
+                    img.logo src="/img/itg_logo.svg" /
                 nav.mdl-navigation
-                    a.mdl-navigation__link href="/issues" Issues
-                    a.mdl-navigation__link href="/faq" FAQ
-
-                    a.mdl-navigation__link href="/settings" Settings
-                    a.mdl-navigation__link href="" Sign out
+                    a.mdl-navigation__link href="/issues"
+                        i.material-icons warning
+                        |  Issues
+                    a.mdl-navigation__link href="/faq"
+                        i.material-icons question_answer
+                        |  FAQ
+                    .mdl-navigation--bottom
+                        a.mdl-navigation__link href="/settings"
+                            i.material-icons settings
+                            |  Settings
+                        a.mdl-navigation__link href=""
+                            i.material-icons cancel
+                            |  Sign out
             main.mdl-layout__content
                 .page-content
                     == yield

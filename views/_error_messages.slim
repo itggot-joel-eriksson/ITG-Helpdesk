@@ -1,0 +1,5 @@
+- if locals[:errors] && locals[:errors].has_key?(locals[:property])
+    - for error in locals[:errors][locals[:property]]
+        span.text--error
+            = error
+        br
