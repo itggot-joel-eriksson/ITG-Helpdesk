@@ -11,9 +11,9 @@ class Seeder
 	def self.users!
 		User.create email: "hanna.nystrom@itggot.se"
 		User.create email: "philip.lund@itggot.se"
-		User.create email: "teddy.henriksson@itggot.se"
-		User.create email: "lydia.hedlund@itggot.se"
-		User.create email: "eddie.lindgren@itggot.se"
+		User.create email: "teddy.henriksson@itggot.se", permission_admin: true
+		User.create email: "lydia.hedlund@itggot.se", permission_teacher: true
+		User.create email: "eddie.lindgren@itggot.se", permission_admin: true
 	end
 
 	def self.categories!
