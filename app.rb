@@ -5,7 +5,12 @@ class App < Sinatra::Base
     set :partial_template_engine, :slim
 
     before do
-        if session.has_key?(:credentials)
+        if session.has_key?(:credentials) && session.has_key?(:google_user)
+            @google_user = session[:google_user]
+            unless @google_user["hd"] == "itggot.se"
+                session[:google_user] = nil
+                halt 403
+            end
         elsif request.path_info != "/oauth2callback"
             redirect "/oauth2callback"
         end
@@ -20,7 +25,7 @@ class App < Sinatra::Base
         client_secrets = Google::APIClient::ClientSecrets.load
         auth_client = client_secrets.to_authorization
         auth_client.update!(
-            scope: "https://www.googleapis.com/auth/plus.me",
+            scope: ["https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
             redirect_uri: url("/oauth2callback")
         )
         if request[:code] == nil
@@ -31,13 +36,23 @@ class App < Sinatra::Base
             auth_client.fetch_access_token!
             auth_client.client_secret = nil
             session[:credentials] = auth_client.to_json
-            redirect "/"
+
+            access_token = auth_client.access_token.to_s
+            usr_info = Unirest.get "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=#{access_token}"
+            session[:google_user] = usr_info.body
+            unless usr_info.body["hd"] == "itggot.se"
+                Unirest.get "https://accounts.google.com/o/oauth2/revoke", params: { :token => access_token }
+                session[:google_user] = nil
+                redirect "/"
+            else
+                redirect "/"
+            end
         end
     end
 
-    get "/user/set/:id" do |id|
-        session[:id] = id
-        redirect "/issues"
+    get "/signout" do
+        session[:credentials] = nil
+        redirect "/"
     end
 
     # CRUD about issues
