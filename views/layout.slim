@@ -32,11 +32,14 @@ html
                         a.mdl-navigation__link href="/issues" Issues
                         a.mdl-navigation__link href="/faq" FAQ
                         button.mdl-button.mdl-js-button.mdl-button--icon.mdl-js-ripple-effect#avatar-menu-lower-right
-                            img src="https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067" style="height: 100%;"
+                            - if @google_user
+                                img src=@google_user["picture"] style="height: 100%;"
+                            - else
+                                img src="https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067" style="height: 100%;"
 
                         ul.mdl-menu.mdl-menu--bottom-right.mdl-js-menu.mdl-js-ripple-effect for="avatar-menu-lower-right"
-                            li.mdl-menu__item.mdl-menu__item--full-bleed-divider Settings
-                            li.mdl-menu__item Sign out
+                            a.mdl-menu__item.mdl-menu__item--full-bleed-divider href="/settings" Settings
+                            a.mdl-menu__item href="/signout" Sign out
             .mdl-layout__drawer
                 span.mdl-layout-title
                     img.logo src="/img/itg_logo.svg" /
@@ -51,7 +54,7 @@ html
                         a.mdl-navigation__link href="/settings"
                             i.material-icons settings
                             |  Settings
-                        a.mdl-navigation__link href=""
+                        a.mdl-navigation__link href="/signout"
                             i.material-icons cancel
                             |  Sign out
             main.mdl-layout__content

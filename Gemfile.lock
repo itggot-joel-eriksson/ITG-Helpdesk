@@ -141,6 +141,8 @@ GEM
       uber (~> 0.0.7)
     rerun (0.11.0)
       listen (~> 3.0)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     retriable (2.1.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -186,6 +188,10 @@ GEM
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uber (0.0.15)
+    unirest (1.0.8)
+      addressable
+      json
+      rest-client
     uuidtools (2.1.5)
     websocket (1.2.3)
     xpath (2.0.0)
@@ -210,6 +216,7 @@ DEPENDENCIES
   slim
   thin
   tilt (~> 1.4.1)
+  unirest
 
 BUNDLED WITH
    1.11.2
