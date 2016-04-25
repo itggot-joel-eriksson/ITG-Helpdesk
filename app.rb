@@ -8,8 +8,17 @@ class App < Sinatra::Base
         if session.has_key?(:credentials) && session.has_key?(:google_user)
             @google_user = session[:google_user]
             unless @google_user["hd"] == "itggot.se"
-                session[:google_user] = nil
+                session.destroy
                 halt 403
+            else
+                @user = User.first(email: @google_user["email"])
+                unless @user
+                    session.destroy
+                    halt 403
+                else
+                    @user.update(name: @google_user["name"], avatar: @google_user["picture"])
+                    session[:id] = @user.id
+                end
             end
         elsif request.path_info != "/oauth2callback"
             redirect "/oauth2callback"
@@ -51,19 +60,17 @@ class App < Sinatra::Base
     end
 
     get "/signout" do
-        session[:credentials] = nil
+        session.destroy
         redirect "/"
     end
 
     # CRUD about issues
     get "/issues/?" do
-        @user = User.first id: session[:id]
         @issues = Issue.all
         slim :issues
     end
 
     get "/view/issue/:uuid/?" do |uuid|
-        @user = User.first id: session[:id]
         begin
             @issue = Issue.first uuid: uuid
         rescue ArgumentError
@@ -75,20 +82,39 @@ class App < Sinatra::Base
             status 404
             slim :error
         else
+            @description = Kramdown::Document.new(@issue.description, :input => 'markdown').to_html
             slim :issue
         end
     end
 
     get "/create/issue/?" do
-        @user = User.first id: session[:id]
+        @categories = Category.all order: [:title.asc]
         slim :create_issue
     end
 
     post "/create/issue/?" do
-        issue = Issue.create title: params[:title], description: params[:description], user_id: 1
-        if !issue.valid?
+        issue = Issue.create uuid: SecureRandom.uuid, title: params[:title], description: params[:description], user_id: 1
+        unless issue.valid?
             flash[:error] = issue.errors.to_h
             redirect back
+        else
+            unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
+                puts "No file selected"
+            else
+                filename = SecureRandom.urlsafe_base64
+                extname = File.extname(name)
+                unless Dir.exist?("uploads/#{@user.uuid}")
+                    Dir.mkdir("uploads/#{@user.uuid}")
+                end
+
+                while payload = tmpfile.read(65536)
+                    File.open("uploads/#{@user.uuid}/#{filename}#{extname}", "a+") do |file|
+                        file.write(payload)
+                    end
+                end
+
+                Upload.create uuid: SecureRandom.uuid, file: "uploads/#{@user.uuid}/#{filename}#{extname}", issue_id: issue.id, user_id: @user.id
+            end
         end
         redirect "/issues"
     end
@@ -102,20 +128,17 @@ class App < Sinatra::Base
     end
 
     post "/delete/issue/?" do
-
         Issue.first(id: params[:issue]).destroy
         redirect "/issues"
     end
 
     # CRUD about FAQ articles and categories
     get "/faq/?" do
-        @user = User.first id: session[:id]
         @articles = Faq.all
         slim :faq
     end
 
     get "/view/faq/:uuid/?" do |uuid|
-        @user = User.first id: session[:id]
         begin
             @article = Faq.first uuid: uuid
         rescue ArgumentError
@@ -127,6 +150,7 @@ class App < Sinatra::Base
             status 404
             slim :error
         else
+            @answer = Kramdown::Document.new(@article.answer, :input => 'markdown').to_html
             slim :faq_article
         end
     end
@@ -134,6 +158,11 @@ class App < Sinatra::Base
     post "/delete/faq/?" do
         Faq.first(id: params[:faq]).destroy
         redirect "/faq"
+    end
+
+    # Other
+    get "/conditions/?" do
+        slim :conditions
     end
 
 end

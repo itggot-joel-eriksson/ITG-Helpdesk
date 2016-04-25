@@ -1,2 +1,7 @@
-h1 = @article.question
-h3 = @article.answer
+.card-wide.mdl-card.mdl-shadow--2dp
+    .mdl-card__title
+        h2.mdl-card__title-text = @article.question
+    .mdl-card__supporting-text
+        p == @answer
+    .mdl-card__menu
+        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect

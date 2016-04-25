@@ -1,2 +1,7 @@
-h1 = @issue.title
-p = @issue.description
+.card-wide.mdl-card.mdl-shadow--2dp
+    .mdl-card__title
+        h2.mdl-card__title-text = @issue.title
+    .mdl-card__supporting-text
+        p == @description
+    .mdl-card__menu
+        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect

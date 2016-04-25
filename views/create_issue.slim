@@ -2,7 +2,13 @@
     .mdl-card__title
         h2.mdl-card__title-text Create issue
     .mdl-card__supporting-text
-        form action="/create/issue" method="post"
+        form action="/create/issue" method="post" enctype="multipart/form-data"
+            .mdl-grid
+                - for category in @categories
+                    .mdl-cell.mdl-cell--4-col
+                        label.mdl-checkbox.mdl-js-checkbox.mdl-js-ripple-effect
+                            input.mdl-checkbox__input type="checkbox" name="category_#{category.uuid}" value=category.uuid
+                            span.mdl-checkbox__label= category.title
             .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
                 input.mdl-textfield__input type="text" name="title"
                 label.mdl-textfield__label Title
@@ -12,6 +18,8 @@
                 textarea.mdl-textfield__input rows="3" name="description"
                 label.mdl-textfield__label Description
             == partial "_error_messages", locals: {errors: flash[:error], property: :description}
+            br
+            input type="file" name="file"
             br
             button.mdl-button.mdl-js-button.mdl-js-ripples.mdl-button--raised.mdl-button--accent
                 | Create issue
