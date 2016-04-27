@@ -497,3 +497,6 @@ wiki_files/
 #Google Authentication
 client_id.json
 client_secrets.json
+
+# Uploaded files
+uploads/

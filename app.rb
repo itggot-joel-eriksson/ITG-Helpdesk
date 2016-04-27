@@ -30,7 +30,9 @@ class App < Sinatra::Base
         slim :index
     end
 
+    # Sign in
     get "/oauth2callback/?" do
+        #User.sign_in(app: self)
         client_secrets = Google::APIClient::ClientSecrets.load
         auth_client = client_secrets.to_authorization
         auth_client.update!(
@@ -59,15 +61,42 @@ class App < Sinatra::Base
         end
     end
 
+    # Sign out
     get "/signout" do
         session.destroy
         redirect "/"
+    end
+
+    # Uploads
+    get "/uploads/:uuid/:file" do |uuid, file|
+        if uuid == @user.uuid || @user.permission_admin || @user.permission_teacher
+            sending_file = File.join("uploads", uuid, file)
+            unless File.exist?(sending_file)
+                status 404
+                slim :error
+            else
+                send_file sending_file
+            end
+        else
+            halt 403
+        end
     end
 
     # CRUD about issues
     get "/issues/?" do
         @issues = Issue.all
         slim :issues
+    end
+
+    get "/view/category/:id/issues/?" do |id|
+        @category = Category.get(id) #include :issues
+        @issues = @category.issues
+        unless @issues
+            status 404
+            slim :error
+        else
+            slim :issues
+        end
     end
 
     get "/view/issue/:uuid/?" do |uuid|
@@ -83,6 +112,7 @@ class App < Sinatra::Base
             slim :error
         else
             @description = Kramdown::Document.new(@issue.description, :input => 'markdown').to_html
+            @uploads = Upload.all issue_id: @issue.id
             slim :issue
         end
     end
@@ -93,27 +123,47 @@ class App < Sinatra::Base
     end
 
     post "/create/issue/?" do
+        if params[:category]
+            for category in params[:category] do
+                puts category
+            end
+        end
+
         issue = Issue.create uuid: SecureRandom.uuid, title: params[:title], description: params[:description], user_id: 1
         unless issue.valid?
             flash[:error] = issue.errors.to_h
             redirect back
         else
-            unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
-                puts "No file selected"
-            else
-                filename = SecureRandom.urlsafe_base64
-                extname = File.extname(name)
-                unless Dir.exist?("uploads/#{@user.uuid}")
-                    Dir.mkdir("uploads/#{@user.uuid}")
-                end
+            #Attachment.upload(app: self, params: params)
 
-                while payload = tmpfile.read(65536)
-                    File.open("uploads/#{@user.uuid}/#{filename}#{extname}", "a+") do |file|
-                        file.write(payload)
+            #class Attachment
+
+            # def self.upload(app:, params:)
+
+            if params[:files]
+                for file in params[:files] do
+                    tmpfile = file[:tempfile]
+                    name = file[:filename]
+
+                    filename = SecureRandom.urlsafe_base64
+                    extname = File.extname(name)
+
+                    unless Dir.exist?("uploads")
+                        Dir.mkdir("uploads")
                     end
-                end
 
-                Upload.create uuid: SecureRandom.uuid, file: "uploads/#{@user.uuid}/#{filename}#{extname}", issue_id: issue.id, user_id: @user.id
+                    unless Dir.exist?("uploads/#{@user.uuid}")
+                        Dir.mkdir("uploads/#{@user.uuid}")
+                    end
+
+                    while payload = tmpfile.read(65536)
+                        File.open("uploads/#{@user.uuid}/#{filename}#{extname}", "a+") do |file|
+                            file.write(payload)
+                        end
+                    end
+
+                    Upload.create uuid: SecureRandom.uuid, file: "/uploads/#{@user.uuid}/#{filename}#{extname}", issue_id: issue.id, user_id: @user.id
+                end
             end
         end
         redirect "/issues"

@@ -7,7 +7,7 @@
                 - for category in @categories
                     .mdl-cell.mdl-cell--4-col
                         label.mdl-checkbox.mdl-js-checkbox.mdl-js-ripple-effect
-                            input.mdl-checkbox__input type="checkbox" name="category_#{category.uuid}" value=category.uuid
+                            input.mdl-checkbox__input type="checkbox" name="category[]" value=category.uuid
                             span.mdl-checkbox__label= category.title
             .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
                 input.mdl-textfield__input type="text" name="title"
@@ -19,7 +19,7 @@
                 label.mdl-textfield__label Description
             == partial "_error_messages", locals: {errors: flash[:error], property: :description}
             br
-            input type="file" name="file"
+            input type="file" name="files[]" multiple="true"
             br
             button.mdl-button.mdl-js-button.mdl-js-ripples.mdl-button--raised.mdl-button--accent
                 | Create issue

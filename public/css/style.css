@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:700")
 @import url("sweetalert.css");
 
 /* START OF MONKEY PATCH */
@@ -57,6 +59,44 @@ body {
 
 .mdl-textfield {
     width: 100%;
+}
+
+.card-image.mdl-card {
+  width: 256px;
+  height: 256px;
+  /*background: url('../assets/demos/image_card.jpg') center / cover;*/
+}
+.card-image > .mdl-card__actions {
+  height: 52px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.card-image__filename {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.file-text {
+    margin-top: .2em;
+}
+
+.fa-stack {
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-bottom: 20px;
+}
+
+.stacked-icons {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.fa-stack + .fa-stack {
+    margin-left: .3em;
+}
+
+.fa-stack-text {
+    font-size: .5em;
 }
 
 @media (min-height: 416px) {

@@ -9,4 +9,5 @@ class Issue
 
 	belongs_to :user
 	has n, :uploads
+	has n, :categories, :through => Resource
 end

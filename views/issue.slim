@@ -3,5 +3,13 @@
         h2.mdl-card__title-text = @issue.title
     .mdl-card__supporting-text
         p == @description
+
+        - for upload in @uploads
+            a href=upload.file
+                span.fa-stack.fa-3x
+                    span.fa.fa-file-o.fa-stack-2x
+                    strong.fa-stack-1x.fa-stack-text.file-text= File.extname(upload.file)
+        - for category in @issue.categories
+            p= category.title
     .mdl-card__menu
         / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect
