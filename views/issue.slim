@@ -4,12 +4,40 @@
     .mdl-card__supporting-text
         p == @description
 
-        - for upload in @uploads
-            a href=upload.file
-                span.fa-stack.fa-3x
-                    span.fa.fa-file-o.fa-stack-2x
-                    strong.fa-stack-1x.fa-stack-text.file-text= File.extname(upload.file)
+        - for attachment in @attachments
+            a href=attachment.file
+                - if Attachment.image?(attachment.file)
+                    span.fa.fa-file-image-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.audio?(attachment.file)
+                    span.fa.fa-file-audio-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.video?(attachment.file)
+                    span.fa.fa-file-video-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.archive?(attachment.file)
+                    span.fa.fa-file-archive-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.code?(attachment.file)
+                    span.fa.fa-file-code-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.text?(attachment.file)
+                    span.fa.fa-file-text-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.ms_word?(attachment.file)
+                    span.fa.fa-file-word-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.ms_powerpoint?(attachment.file)
+                    span.fa.fa-file-powerpoint-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.ms_excel?(attachment.file)
+                    span.fa.fa-file-excel-o.fa-3x id=File.basename(attachment.file)
+                - elsif Attachment.pdf?(attachment.file)
+                    span.fa.fa-file-pdf-o.fa-3x id=File.basename(attachment.file)
+                - else
+                    span.fa-stack.fa-3x id=File.basename(attachment.file)
+                        span.fa.fa-file-o.fa-stack-2x
+                        strong.fa-stack-1x.fa-stack-text.file-text= File.extname(attachment.file)
+
+            .mdl-tooltip for=File.basename(attachment.file) #{File.basename(attachment.file)}
         - for category in @issue.categories
-            p= category.title
-    .mdl-card__menu
-        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect
+            p
+                a href="/view/category/#{category.title}/issues"= category.title
+    .mdl-card__actions.mdl-card--border
+        a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect
+            | Edit
+        form.delete-form action="/delete/issue" method="post" style="display: inline-block;"
+            input.hidden type="text" name="issue" value=@issue.uuid
+            input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Delete"

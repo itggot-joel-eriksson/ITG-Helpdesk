@@ -8,4 +8,8 @@ class Faq
     property :created_at, EpochTime
 
     belongs_to :user
+
+    def self.delete(app:, user:, params:)
+        return Faq.first(uuid: params[:faq]).destroy!
+    end
 end

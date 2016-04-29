@@ -15,6 +15,7 @@ gem 'rack-flash3', require: 'rack-flash'
 gem 'google-api-client', '0.9', require: 'google/api_client/client_secrets'
 gem 'unirest'
 gem 'kramdown', require: 'kramdown'
+gem 'pry'
 
 # Used during local development (on your own machine)
 group :development do

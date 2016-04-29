@@ -3,15 +3,19 @@
         h2.mdl-card__title-text Issues
     .mdl-card__supporting-text
         .mdl-list
-            - for issue in @issues do
-                .mdl-list__item
-                    span.mdl-list__item-primary-content
-                        - if issue.user.avatar
-                            img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
-                        -else
-                            i.material-icons.mdl-list__item-avatar person
-                        a href="view/issue/#{issue.uuid}" = issue.title
-                    a.mdl-list__item-secondary-action href="#"
-                        i.material-icons star
-    .mdl-card__menu
-        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect
+            - if @issues.empty?
+                h4 There are no issues reported!
+                p
+                    To report an issue click the add button in the bottom right corner or click 
+                    a href="/create/issue" here.
+            - else
+                - for issue in @issues do
+                    .mdl-list__item
+                        span.mdl-list__item-primary-content
+                            - if issue.user.avatar
+                                img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                            -else
+                                i.material-icons.mdl-list__item-avatar person
+                            a href="/view/issue/#{issue.uuid}" = issue.title
+                        a.mdl-list__item-secondary-action href="#"
+                            i.material-icons star

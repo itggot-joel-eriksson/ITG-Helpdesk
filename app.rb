@@ -1,3 +1,5 @@
+require 'pry'
+
 class App < Sinatra::Base
     enable :sessions
     use Rack::Flash
@@ -7,62 +9,53 @@ class App < Sinatra::Base
     before do
         if session.has_key?(:credentials) && session.has_key?(:google_user)
             @google_user = session[:google_user]
-            unless @google_user["hd"] == "itggot.se"
-                session.destroy
-                halt 403
-            else
+            if @google_user["hd"] == "itggot.se"
                 @user = User.first(email: @google_user["email"])
-                unless @user
-                    session.destroy
-                    halt 403
-                else
+                if @user
                     @user.update(name: @google_user["name"], avatar: @google_user["picture"])
                     session[:id] = @user.id
+
+                    if request.path_info == "/oauth2callback" || request.path_info == "/signin"
+                        redirect "/"
+                    end
+                else
+                    session.destroy
+                    halt 403
                 end
+            else
+                session.destroy
+                halt 403
             end
-        elsif request.path_info != "/oauth2callback"
-            redirect "/oauth2callback"
+        elsif request.path_info != "/oauth2callback" && request.path_info != "/signin"
+            redirect "/signin"
         end
     end
 
     get "/?" do
-        # redirect "/issues"
         slim :index
     end
 
-    # Sign in
-    get "/oauth2callback/?" do
-        #User.sign_in(app: self)
-        client_secrets = Google::APIClient::ClientSecrets.load
-        auth_client = client_secrets.to_authorization
-        auth_client.update!(
-            scope: ["https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
-            redirect_uri: url("/oauth2callback")
-        )
-        if request[:code] == nil
-            auth_uri = auth_client.authorization_uri.to_s
-            redirect auth_uri
-        else
-            auth_client.code = request[:code]
-            auth_client.fetch_access_token!
-            auth_client.client_secret = nil
-            session[:credentials] = auth_client.to_json
+    # Show interface for signing in
+    get "/signin/?" do
+        slim :signin, layout: false
+    end
 
-            access_token = auth_client.access_token.to_s
-            usr_info = Unirest.get "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=#{access_token}"
-            session[:google_user] = usr_info.body
-            unless usr_info.body["hd"] == "itggot.se"
-                Unirest.get "https://accounts.google.com/o/oauth2/revoke", params: { :token => access_token }
-                session[:google_user] = nil
-                redirect "/"
-            else
-                redirect "/"
-            end
+    # Authorize with Google
+    get "/oauth2callback/?" do
+        user_info_or_redirect, access_token = User.authorize(app: self, params: params)
+
+        if user_info_or_redirect.is_a? String
+            redirect user_info_or_redirect
+        elsif user_info_or_redirect["hd"] == "itggot.se"
+            redirect "/"
+        else
+            User.revoke(app: self, access_token: access_token)
+            redirect "/"
         end
     end
 
     # Sign out
-    get "/signout" do
+    get "/signout/?" do
         session.destroy
         redirect "/"
     end
@@ -82,14 +75,19 @@ class App < Sinatra::Base
         end
     end
 
-    # CRUD about issues
+    # List all issues
     get "/issues/?" do
         @issues = Issue.all
         slim :issues
     end
 
-    get "/view/category/:id/issues/?" do |id|
-        @category = Category.get(id) #include :issues
+    # List all issues that has a certain category
+    get "/view/category/:title/issues/?" do |title|
+        @category = Category.first(title: title) #include :issues
+        unless @category
+            status 404
+            slim :error
+        end
         @issues = @category.issues
         unless @issues
             status 404
@@ -99,6 +97,7 @@ class App < Sinatra::Base
         end
     end
 
+    # Read an issue along with its attachments and categories
     get "/view/issue/:uuid/?" do |uuid|
         begin
             @issue = Issue.first uuid: uuid
@@ -112,101 +111,62 @@ class App < Sinatra::Base
             slim :error
         else
             @description = Kramdown::Document.new(@issue.description, :input => 'markdown').to_html
-            @uploads = Upload.all issue_id: @issue.id
+            @attachments = Attachment.all(issue_id: @issue.id)
             slim :issue
         end
     end
 
+    # Show the interface for creating an issue
     get "/create/issue/?" do
         @categories = Category.all order: [:title.asc]
         slim :create_issue
     end
 
+    # Report the issue to the database
     post "/create/issue/?" do
-        if params[:category]
-            for category in params[:category] do
-                puts category
-            end
-        end
-
-        issue = Issue.create uuid: SecureRandom.uuid, title: params[:title], description: params[:description], user_id: 1
-        unless issue.valid?
+        issue = Issue.report(app: self, user: @user, params: params)
+        if issue.valid?
+            Attachment.upload(app: self, user: @user, issue: issue, params: params)
+			redirect "/issues"
+        else
             flash[:error] = issue.errors.to_h
             redirect back
-        else
-            #Attachment.upload(app: self, params: params)
-
-            #class Attachment
-
-            # def self.upload(app:, params:)
-
-            if params[:files]
-                for file in params[:files] do
-                    tmpfile = file[:tempfile]
-                    name = file[:filename]
-
-                    filename = SecureRandom.urlsafe_base64
-                    extname = File.extname(name)
-
-                    unless Dir.exist?("uploads")
-                        Dir.mkdir("uploads")
-                    end
-
-                    unless Dir.exist?("uploads/#{@user.uuid}")
-                        Dir.mkdir("uploads/#{@user.uuid}")
-                    end
-
-                    while payload = tmpfile.read(65536)
-                        File.open("uploads/#{@user.uuid}/#{filename}#{extname}", "a+") do |file|
-                            file.write(payload)
-                        end
-                    end
-
-                    Upload.create uuid: SecureRandom.uuid, file: "/uploads/#{@user.uuid}/#{filename}#{extname}", issue_id: issue.id, user_id: @user.id
-                end
-            end
         end
-        redirect "/issues"
     end
 
+    # Show the interface to edit an issue
     get "/edit/issue/?" do
 
     end
 
+    # Update the database with edits made to an issue
     post "/edit/issue/?" do
 
     end
 
+    # Delete an issue along with its attachments from database and filesystem
     post "/delete/issue/?" do
-        Issue.first(id: params[:issue]).destroy
-        redirect "/issues"
+        Issue.delete(app: self, user: @user, params: params)
     end
 
-    # CRUD about FAQ articles and categories
+    # List all FAQ articles
     get "/faq/?" do
         @articles = Faq.all
         slim :faq
     end
 
     get "/view/faq/:uuid/?" do |uuid|
-        begin
-            @article = Faq.first uuid: uuid
-        rescue ArgumentError
-            status 404
-            slim :error
-        end
-
         unless @article
             status 404
             slim :error
-        else
-            @answer = Kramdown::Document.new(@article.answer, :input => 'markdown').to_html
-            slim :faq_article
         end
+
+        @answer = Kramdown::Document.new(@article.answer, :input => 'markdown').to_html
+        slim :faq_article
     end
 
     post "/delete/faq/?" do
-        Faq.first(id: params[:faq]).destroy
+        faq = Faq.delete(app: self, user: @user, params: params)
         redirect "/faq"
     end
 

@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css");
-@import url("https://fonts.googleapis.com/css?family=Montserrat:700")
 @import url("sweetalert.css");
+@import url("sweetalert-google.css");
 
 /* START OF MONKEY PATCH */
 header .material-icons {
@@ -36,6 +36,29 @@ body {
     width: 50%;
 }
 
+.fix-height {
+    padding-top: 100px;
+}
+
+.card-signin.mdl-card {
+    margin: auto;
+    text-align: center;
+}
+
+.google-signin {
+    width: 75%;
+}
+
+.signin-footer {
+    background-color: #424242;
+}
+
+.signin-logo {
+    padding: 10px;
+    width: 25%;
+    margin: auto;
+}
+
 #create-issue {
     position: fixed;
     right: 25px;
@@ -62,19 +85,18 @@ body {
 }
 
 .card-image.mdl-card {
-  width: 256px;
-  height: 256px;
-  /*background: url('../assets/demos/image_card.jpg') center / cover;*/
+    width: 256px;
+    height: 256px;
 }
 .card-image > .mdl-card__actions {
-  height: 52px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.2);
+    height: 52px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
 }
 .card-image__filename {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .file-text {
@@ -82,13 +104,12 @@ body {
 }
 
 .fa-stack {
-    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-bottom: 20px;
 }
 
 .stacked-icons {
-  margin-top: 20px;
-  text-align: center;
+    margin-top: 20px;
+    text-align: center;
 }
 
 .fa-stack + .fa-stack {
@@ -97,6 +118,37 @@ body {
 
 .fa-stack-text {
     font-size: .5em;
+}
+
+.delete-form {
+    margin: 0;
+    padding: 0;
+}
+
+.file_input_div {
+    margin: auto;
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+}
+
+.file_input {
+    float: left;
+}
+
+.input_file {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.files-to-upload {
+    margin: 0 10px;
+    float: left;
+    line-height: 40px;
+    vertical-align: middle;
+    letter-spacing: 2px;
 }
 
 @media (min-height: 416px) {
