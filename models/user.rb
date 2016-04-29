@@ -16,7 +16,7 @@ class User
     has n, :attachments
 
     def self.authorize(app:, params:)
-        client_secrets = Google::APIClient::ClientSecrets.load
+        client_secrets = Google::APIClient::ClientSecrets.load || Google::APIClient::ClientSecrets.new(JSON.parse(ENV["GOOGLE_CLIENT_SECRETS"]))
         auth_client = client_secrets.to_authorization
         auth_client.update!(
             scope: ["https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
