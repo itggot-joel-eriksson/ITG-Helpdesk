@@ -32,7 +32,7 @@ class Attachment
                     end
                 end
 
-                Attachment.create uuid: SecureRandom.uuid, file: "/uploads/#{user.uuid}/#{filename}#{extname}", issue_id: issue.id, user_id: user.id
+                Attachment.create(uuid: SecureRandom.uuid, file: "/uploads/#{user.uuid}/#{filename}#{extname}", issue_id: issue.id, user_id: user.id)
             end
         end
     end

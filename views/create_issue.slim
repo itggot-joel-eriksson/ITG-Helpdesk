@@ -9,15 +9,29 @@
                         label.mdl-checkbox.mdl-js-checkbox.mdl-js-ripple-effect
                             input.mdl-checkbox__input type="checkbox" name="category[]" value=category.uuid
                             span.mdl-checkbox__label= category.title
-            .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
-                input.mdl-textfield__input type="text" name="title"
-                label.mdl-textfield__label Title
-            == partial "_error_messages", locals: {errors: flash[:error], property: :title}
+            .mdl-grid
+                .mdl-cell.mdl-cell--12-col
+                    .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
+                        input.mdl-textfield__input type="text" name="title"
+                        label.mdl-textfield__label Title
+                    == partial "_error_messages", locals: {errors: flash[:error], property: :title}
             br
-            .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
-                textarea.mdl-textfield__input rows="3" name="description"
-                label.mdl-textfield__label Description
-            == partial "_error_messages", locals: {errors: flash[:error], property: :description}
+            .mdl-grid
+                .mdl-cell.mdl-cell--12-col
+                    .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
+                        textarea.mdl-textfield__input rows="3" name="description"
+                        label.mdl-textfield__label Description
+                    == partial "_error_messages", locals: {errors: flash[:error], property: :description}
+            br
+            .mdl-grid
+                .mdl-cell.mdl-cell--8-col
+                    .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
+                        input.mdl-textfield__input type="text" name="custom_email"
+                        label.mdl-textfield__label Custom email
+                .mdl-cell.mdl-cell--4-col
+                    label.mdl-switch.mdl-js-switch.mdl-js-ripple-effect
+                        input.mdl-switch__input type="checkbox" checked="true"
+                        span.mdl-switch__label Get notified
             br
             .file_input_div
                 .file_input

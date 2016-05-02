@@ -1,5 +1,3 @@
-require 'pry'
-
 class App < Sinatra::Base
     enable :sessions
     use Rack::Flash
@@ -50,7 +48,8 @@ class App < Sinatra::Base
             redirect "/"
         else
             User.revoke(app: self, access_token: access_token)
-            redirect "/"
+            session[:invalid_domain] = true
+            redirect "/signin"
         end
     end
 
@@ -147,6 +146,7 @@ class App < Sinatra::Base
     # Delete an issue along with its attachments from database and filesystem
     post "/delete/issue/?" do
         Issue.delete(app: self, user: @user, params: params)
+        redirect "/issues"
     end
 
     # List all FAQ articles

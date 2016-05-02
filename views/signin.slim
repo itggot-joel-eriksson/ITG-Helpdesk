@@ -19,3 +19,20 @@ html
                         img.google-signin src="/img/google+_signin.svg" draggable="false"
                 .signin-footer
                     img.signin-logo src="/img/itg_logo.svg" draggable="false"
+
+        #error-snackbar.mdl-js-snackbar.mdl-snackbar
+            .mdl-snackbar__text
+            button.mdl-snackbar__action type="button"
+
+        - if session[:invalid_domain]
+            javascript:
+                function invalid_domain() {
+                    var snackbarContainer = $("#error-snackbar").get(0);
+                    var data = {
+                        message: "Error: Invalid domain",
+                        timeout: 3000,
+                    };
+                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                }
+                componentHandler.upgradeElement($("#error-snackbar").get(0));
+                setTimeout(invalid_domain, 500);

@@ -5,6 +5,7 @@ class Issue
 	property :uuid, String, required: true, unique: true
 	property :title, String, required: true
 	property :description, Text, required: true
+	property :custom_email, String, format: :email_address
 	property :created_at, EpochTime
 
 	belongs_to :user
@@ -40,6 +41,5 @@ class Issue
 		issue.attachments.destroy
 		issue.category_issues.destroy
 		issue.destroy!
-        app.redirect "/issues"
 	end
 end

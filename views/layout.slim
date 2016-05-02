@@ -3,6 +3,11 @@ html
     head
         meta charset="utf-8"
         meta name="viewport" content="width=device-width, initial-scale=1.0"
+        meta name="msapplication-TileColor" content="#da532c"
+        meta name="msapplication-TileImage" content="/img/favicons/mstile-144x144.png?v=PYY6Y5vRMA"
+        meta name="msapplication-config" content="/img/favicons/browserconfig.xml?v=PYY6Y5vRMA"
+        meta name="theme-color" content="#e0e0e0"
+
         title ITG-Helpdesk
 
         script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"
@@ -18,7 +23,25 @@ html
             link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.red-pink.min.css"
         - else
             link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.teal-pink.min.css"
-        link rel="stylesheet" href="/css/style.css" /
+        link rel="stylesheet" href="/css/style.css"
+
+        link rel="apple-touch-icon" sizes="57x57" href="/img/favicons/apple-touch-icon-57x57.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="60x60" href="/img/favicons/apple-touch-icon-60x60.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="72x72" href="/img/favicons/apple-touch-icon-72x72.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="76x76" href="/img/favicons/apple-touch-icon-76x76.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="114x114" href="/img/favicons/apple-touch-icon-114x114.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="120x120" href="/img/favicons/apple-touch-icon-120x120.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="144x144" href="/img/favicons/apple-touch-icon-144x144.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="152x152" href="/img/favicons/apple-touch-icon-152x152.png?v=PYY6Y5vRMA"
+        link rel="apple-touch-icon" sizes="180x180" href="/img/favicons/apple-touch-icon-180x180.png?v=PYY6Y5vRMA"
+        link rel="icon" type="image/png" href="/img/favicons/favicon-32x32.png?v=PYY6Y5vRMA" sizes="32x32"
+        link rel="icon" type="image/png" href="/img/favicons/favicon-194x194.png?v=PYY6Y5vRMA" sizes="194x194"
+        link rel="icon" type="image/png" href="/img/favicons/favicon-96x96.png?v=PYY6Y5vRMA" sizes="96x96"
+        link rel="icon" type="image/png" href="/img/favicons/android-chrome-192x192.png?v=PYY6Y5vRMA" sizes="192x192"
+        link rel="icon" type="image/png" href="/img/favicons/favicon-16x16.png?v=PYY6Y5vRMA" sizes="16x16"
+        link rel="manifest" href="/img/favicons/manifest.json?v=PYY6Y5vRMA"
+        link rel="mask-icon" href="/img/favicons/safari-pinned-tab.svg?v=PYY6Y5vRMA" color="#5bbad5"
+        link rel="shortcut icon" href="/img/favicons/favicon.ico?v=PYY6Y5vRMA"
     body
         .mdl-layout.mdl-js-layout.mdl-layout--fixed-header
             header.mdl-layout__header
@@ -66,7 +89,8 @@ html
 
                 footer.mdl-mini-footer
                     .mdl-mini-footer__left-section
-                        .mdl-logo ITG-Helpdesk
+                        .mdl-logo
+                            img src="/img/itg_logo.svg"
                         ul.mdl-mini-footer__link-list
                             li
                                 a href="#" Help
