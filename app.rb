@@ -18,11 +18,11 @@ class App < Sinatra::Base
                     end
                 else
                     session.destroy
-                    halt 403
+                    return throw_error(app: self, code: 403, message: "forbidden")
                 end
             else
                 session.destroy
-                halt 403
+                return throw_error(app: self, code: 403, message: "forbidden")
             end
         elsif request.path_info != "/oauth2callback" && request.path_info != "/signin"
             redirect "/signin"
@@ -64,60 +64,64 @@ class App < Sinatra::Base
         if uuid == @user.uuid || @user.permission_admin || @user.permission_teacher
             sending_file = File.join("uploads", uuid, file)
             unless File.exist?(sending_file)
-                status 404
-                slim :error
+                return throw_error(app: self, code: 403, message: "forbidden")
             else
                 send_file sending_file
             end
         else
-            halt 403
+            return throw_error(app: self, code: 403, message: "forbidden")
         end
     end
 
     # List all issues
     get "/issues/?" do
-        @issues = Issue.all
+        if @user.permission_admin
+            @assigned_issues = Issue.all(solved: false)
+            @unassigned_issues = Issue.all(id: 3, solved: false)
+            @unsolved_issues = Issue.all(solved: false)
+            @solved_issues = Issue.all(solved: true)
+        else
+            @unsolved_issues = Issue.all(user_id: @user.id, solved: false)
+            @solved_issues = Issue.all(user_id: @user.id, solved: true)
+        end
         slim :issues
     end
 
     # List all issues that has a certain category
     get "/view/category/:title/issues/?" do |title|
-        @category = Category.first(title: title) #include :issues
+        @category = Category.first(title: title)
         unless @category
-            status 404
-            slim :error
+            return throw_error(app: self, code: 404, message: "not found")
         end
-        @issues = @category.issues
-        unless @issues
-            status 404
-            slim :error
+
+        if @user.permission_admin
+            @assigned_issues = @category.issues
+            @unassigned_issues = @category.issues
+            @unsolved_issues = @category.issues(solved: false)
+            @solved_issues = @category.issues(solved: true)
         else
-            slim :issues
+            @unsolved_issues = @category.issues(user_id: @user.id, solved: false)
+            @solved_issues = @category.issues(user_id: @user.id, solved: true)
         end
+
+        slim :issues
     end
 
     # Read an issue along with its attachments and categories
     get "/view/issue/:uuid/?" do |uuid|
-        begin
-            @issue = Issue.first uuid: uuid
-        rescue ArgumentError
-            status 404
-            slim :error
-        end
-
-        unless @issue
-            status 404
-            slim :error
-        else
+        @issue = Issue.first(uuid: uuid)
+        if @issue
             @description = Kramdown::Document.new(@issue.description, :input => 'markdown').to_html
             @attachments = Attachment.all(issue_id: @issue.id)
             slim :issue
+        else
+            return throw_error(app: self, code: 404, message: "not found")
         end
     end
 
     # Show the interface for creating an issue
     get "/create/issue/?" do
-        @categories = Category.all order: [:title.asc]
+        @categories = Category.all(order: [:title.asc])
         slim :create_issue
     end
 
@@ -134,8 +138,13 @@ class App < Sinatra::Base
     end
 
     # Show the interface to edit an issue
-    get "/edit/issue/?" do
-
+    get "/edit/issue/:uuid" do |uuid|
+        @categories = Category.all(order: [:title.asc])
+        @issue = Issue.first(uuid: uuid)
+        unless @issue.user_id == @user.id || @user.permission_admin || @user.permission_teacher
+            return throw_error(app: self, code: 403, message: "forbidden")
+        end
+        slim :edit_issue
     end
 
     # Update the database with edits made to an issue
@@ -149,6 +158,11 @@ class App < Sinatra::Base
         redirect "/issues"
     end
 
+    post "/edit/issue/solved" do
+        Issue.mark_solved(app: self, user: @user, params: params)
+        redirect "/issues"
+    end
+
     # List all FAQ articles
     get "/faq/?" do
         @articles = Faq.all
@@ -156,9 +170,9 @@ class App < Sinatra::Base
     end
 
     get "/view/faq/:uuid/?" do |uuid|
+        @article = Faq.first(uuid: uuid)
         unless @article
-            status 404
-            slim :error
+            return throw_error(app: self, code: 404, message: "not found")
         end
 
         @answer = Kramdown::Document.new(@article.answer, :input => 'markdown').to_html
@@ -170,9 +184,41 @@ class App < Sinatra::Base
         redirect "/faq"
     end
 
+    # Settings
+    get "/settings/?" do
+        slim :settings
+    end
+
+    # User settings
+    get "/users/?" do
+        unless @user.permission_admin || @user.permission_teacher
+            return throw_error(app: self, code: 403, message: "not found")
+        end
+
+        @admins = User.all(permission_admin: true, :order => [ :name.asc ])
+        @teachers = User.all(permission_teacher: true, :order => [ :name.asc ])
+        @students = User.all(permission_admin: false, permission_teacher: false, :order => [ :name.asc ])
+
+        slim :users
+    end
+
+    post "/delete/user/?" do
+        unless @user.permission_admin
+            return throw_error(app: self, code: 403, message: "forbidden")
+        end
+
+        User.delete(app: self, user: @user, params: params)
+        redirect "/users"
+    end
+
     # Other
     get "/conditions/?" do
         slim :conditions
+    end
+
+    error do
+        @error = env["sinatra.error"]
+        slim :error
     end
 
 end

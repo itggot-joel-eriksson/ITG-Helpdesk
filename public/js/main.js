@@ -1,12 +1,7 @@
 $(function() {
     $("textarea").autogrow();
 
-    var hammertime = new Hammer(document.body, {});
-    hammertime.on("swiperight", function(event) {
-        $(".mdl-layout__drawer-button").trigger("click");
-    });
-
-    $(".delete-form").on("submit", function(event) {
+    $(".delete-issue").on("submit", function(event) {
         event.preventDefault();
 
         var url = $(this).attr("action"),

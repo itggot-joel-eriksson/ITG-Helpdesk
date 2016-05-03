@@ -1,21 +1,17 @@
-.card-wide.mdl-card.mdl-shadow--2dp
+.card-wide.mdl-card.mdl-shadow--2dp.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
     .mdl-card__title
         h2.mdl-card__title-text Issues
+    .mdl-tabs__tab-bar style="width: 100%;"
+        - if @user.permission_admin
+            a.mdl-tabs__tab.is-active href="#assigned-issues-panel" Assigned
+            a.mdl-tabs__tab href="#unassigned-issues-panel" Unassigned
+            a.mdl-tabs__tab href="#unsolved-issues-panel" Unsolved
+            a.mdl-tabs__tab href="#solved-issues-panel" Solved
+        - else
+            a.mdl-tabs__tab.is-active href="#unsolved-issues-panel" Unsolved isssues
+            a.mdl-tabs__tab href="#solved-issues-panel" Solved issues
     .mdl-card__supporting-text
-        .mdl-list
-            - if @issues.empty?
-                h4 There are no issues reported!
-                p
-                    To report an issue click the add button in the bottom right corner or click 
-                    a href="/create/issue" here.
-            - else
-                - for issue in @issues do
-                    .mdl-list__item
-                        span.mdl-list__item-primary-content
-                            - if issue.user.avatar
-                                img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
-                            -else
-                                i.material-icons.mdl-list__item-avatar person
-                            a href="/view/issue/#{issue.uuid}" = issue.title
-                        a.mdl-list__item-secondary-action href="#"
-                            i.material-icons star
+        - if @user.permission_admin
+            == partial "_issues_admin_tabs"
+        - else @user.permission_admin
+            == partial "_issues_tabs"

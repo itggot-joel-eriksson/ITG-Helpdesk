@@ -6,14 +6,17 @@ class Attachment
     property :file, FilePath, required: true
     property :created_at, EpochTime
 
-    belongs_to :issue
+    belongs_to :issue, required: false
+    belongs_to :faq, required: false
     belongs_to :user
 
     def self.upload(app:, user:, issue:, params:)
         if params[:files]
-            for file in params[:files] do
+            params[:files].each do |file|
                 tmpfile = file[:tempfile]
                 name = file[:filename]
+
+                next if tmpfile.size.MB > 10
 
                 filename = SecureRandom.urlsafe_base64
                 extname = File.extname(name)

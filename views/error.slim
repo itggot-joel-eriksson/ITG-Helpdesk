@@ -1,1 +1,5 @@
-h1 Uh-oh an error has occured!
+.card-wide.mdl-card.mdl-shadow--2dp
+    .mdl-card__supporting-text
+        h2.text-align--center Uh-oh an error has occured!
+        - if @error
+            h4.text-align--center= "#{@error[:code]} #{@error[:message]}"

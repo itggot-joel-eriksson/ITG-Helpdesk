@@ -5,5 +5,6 @@ class Category
 	property :uuid, String, required: true, unique: true
 	property :title, String, required: true, unique: true
 
-	has n, :issues, :through => Resource
+	has n, :issues, through: Resource, required: false
+	has n, :faqs, through: Resource, required: false
 end

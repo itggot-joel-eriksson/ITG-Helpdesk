@@ -33,6 +33,8 @@ configure :production do
   # Use Postgresql
   DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost/mydb')
 
+  set :show_exceptions, :after_handler
+
 end
 
 # Used when running tests (rake test:[acceptance|models|routes])

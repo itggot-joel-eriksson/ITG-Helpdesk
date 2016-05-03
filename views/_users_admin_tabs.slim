@@ -1,0 +1,51 @@
+#students-panel.mdl-tabs__panel.is-active
+    - if @students.empty?
+        h4 There are no students!
+    - else
+        noscript
+            h4 Students
+        - for student in @students
+            .mdl-list
+                .mdl-list__item.mdl-list__item--two-line
+                    span.mdl-list__item-primary-content
+                        img.mdl-list__item-avatar src=student.avatar alt=student.name style="background-color: #FFFFFF;"
+                        span= student.name
+                        a.mdl-list__item-sub-title href="mailto:#{student.email}"= student.email
+                    form.delete-user.issue-form action="/delete/user" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="user" value=student.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="1delete_#{student.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="1delete_#{student.uuid}" Remove user
+#teachers-panel.mdl-tabs__panel
+    - if @teachers.empty?
+        h4 There are no teachers!
+    - else
+        noscript
+            h4 Teachers
+        - for teacher in @teachers
+            .mdl-list
+                .mdl-list__item.mdl-list__item--two-line
+                    span.mdl-list__item-primary-content
+                        img.mdl-list__item-avatar src=teacher.avatar alt=teacher.name style="background-color: #FFFFFF;"
+                        span= teacher.name
+                        a.mdl-list__item-sub-title href="mailto:#{teacher.email}"= teacher.email
+                    form.delete-user.issue-form action="/delete/user" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="user" value=teacher.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="2delete_#{teacher.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="2delete_#{teacher.uuid}" Remove user
+#admins-panel.mdl-tabs__panel
+    - if @admins.empty?
+        h4 Uh-oh, found no admins, that's no good!
+    - else
+        noscript
+            h4 Admins
+        - for admin in @admins
+            .mdl-list
+                .mdl-list__item.mdl-list__item--two-line
+                    span.mdl-list__item-primary-content
+                        img.mdl-list__item-avatar src=admin.avatar alt=admin.name style="background-color: #FFFFFF;"
+                        span= admin.name
+                        a.mdl-list__item-sub-title href="mailto:#{admin.email}"= admin.email
+                    form.issue-form action="/delete/user" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="user" value=admin.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{admin.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="3delete_#{admin.uuid}" Remove user

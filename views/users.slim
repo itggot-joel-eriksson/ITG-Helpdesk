@@ -1,0 +1,12 @@
+.card-wide.mdl-card.mdl-shadow--2dp.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+    .mdl-card__title
+        h2.mdl-card__title-text Users
+    .mdl-tabs__tab-bar style="width: 100%;"
+        a.mdl-tabs__tab.is-active href="#students-panel" Students
+        a.mdl-tabs__tab href="#teachers-panel" Teachers
+        a.mdl-tabs__tab href="#admins-panel" Admins
+    .mdl-card__supporting-text
+        - if @user.permission_admin
+            == partial "_users_admin_tabs"
+        - else
+            == partial "_users_teacher_tabs"

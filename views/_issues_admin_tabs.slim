@@ -1,0 +1,90 @@
+#assigned-issues-panel.mdl-tabs__panel.is-active
+    - if @assigned_issues.empty?
+        h4 You have no assigned issues!
+    - else
+        noscript
+            h4 Assigned issues
+        - for issue in @assigned_issues
+            .mdl-list
+                .mdl-list__item
+                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                        img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                        span= issue.title
+                    form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.hidden type="text" name="solved" value="y"
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--colored.material-icons id="1solve_#{issue.uuid}" type="submit" value="check_box"
+                    .mdl-tooltip for="1solve_#{issue.uuid}" Mark as solved
+                    form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="1delete_#{issue.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="1delete_#{issue.uuid}" Delete issue
+#unassigned-issues-panel.mdl-tabs__panel
+    - if @unassigned_issues.empty?
+        h4 There are no unassigned issues!
+    - else
+        noscript
+            h4 Unassigned issues
+        - for issue in @unassigned_issues
+            .mdl-list
+                .mdl-list__item
+                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                        img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                        span= issue.title
+                    form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.hidden type="text" name="solved" value="y"
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--colored.material-icons id="2solve_#{issue.uuid}" type="submit" value="check_box"
+                    .mdl-tooltip for="2solve_#{issue.uuid}" Mark as solved
+                    form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="2delete_#{issue.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="2delete_#{issue.uuid}" Delete issue
+#unsolved-issues-panel.mdl-tabs__panel
+    - if @unsolved_issues.empty?
+        h4 There are no unsolved issues!
+        p
+            | To report an issue click the add button in the bottom right corner or click&nbsp;
+            a href="/create/issue" here.
+    - else
+        noscript
+            h4 Unsolved issues
+        - for issue in @unsolved_issues
+            .mdl-list
+                .mdl-list__item
+                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                        img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                        span= issue.title
+                    form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.hidden type="text" name="solved" value="y"
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--colored.material-icons id="3solve_#{issue.uuid}" type="submit" value="check_box"
+                    .mdl-tooltip for="3solve_#{issue.uuid}" Mark as solved
+                    form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{issue.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="3delete_#{issue.uuid}" Delete issue
+#solved-issues-panel.mdl-tabs__panel
+    - if @solved_issues.empty?
+        h4 There are no solved issues!
+        p
+            | To report an issue click the add button in the bottom right corner or click&nbsp;
+            a href="/create/issue" here.
+    - else
+        noscript
+            h4 Solved issues
+        - for issue in @solved_issues
+            .mdl-list
+                .mdl-list__item
+                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                        img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                        span= issue.title
+                    form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.hidden type="text" name="solved" value="n"
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--colored.material-icons id="4solve_#{issue.uuid}" type="submit" value="check_box_outline_blank"
+                    .mdl-tooltip for="4solve_#{issue.uuid}" Mark as unsolved
+                    form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
+                        input.hidden type="text" name="issue" value=issue.uuid
+                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="4delete_#{issue.uuid}" type="submit" value="delete"
+                    .mdl-tooltip for="4delete_#{issue.uuid}" Delete issue

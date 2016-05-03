@@ -1,0 +1,34 @@
+#unsolved-issues-panel.mdl-tabs__panel.is-active
+    - if @unsolved_issues.empty?
+        h4 There are no unsolved issues!
+        p
+            | To report an issue click the add button in the bottom right corner or click&nbsp;
+            a href="/create/issue" here.
+    - else
+        noscript
+            h1 Unsolved issues
+        - for issue in @unsolved_issues
+            .mdl-list
+                .mdl-list__item
+                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                        img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                        span= issue.title
+                    a.mdl-list__item-secondary-action.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.mdl-color-text--primary href="/edit/issue/#{issue.uuid}"
+                        span.material-icons mode_edit
+#solved-issues-panel.mdl-tabs__panel
+    - if @solved_issues.empty?
+        h4 There are no solved issues!
+        p
+            | To report an issue click the add button in the bottom right corner or click&nbsp;
+            a href="/create/issue" here.
+    - else
+        noscript
+            h1 Solved issues
+        - for issue in @solved_issues
+            .mdl-list
+                .mdl-list__item
+                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                        img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
+                        span= issue.title
+                    a.mdl-list__item-secondary-action href="#"
+                        i.material-icons star

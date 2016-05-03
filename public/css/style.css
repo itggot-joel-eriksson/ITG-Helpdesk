@@ -120,7 +120,7 @@ body {
     font-size: .5em;
 }
 
-.delete-form {
+.issue-form {
     margin: 0;
     padding: 0;
 }
@@ -149,6 +149,14 @@ body {
     line-height: 40px;
     vertical-align: middle;
     letter-spacing: 2px;
+}
+
+.mdl-tabs__tab {
+    width: 100%;
+}
+
+.text-align--center {
+    text-align: center;
 }
 
 @media (min-height: 416px) {

@@ -36,8 +36,19 @@
             p
                 a href="/view/category/#{category.title}/issues"= category.title
     .mdl-card__actions.mdl-card--border
-        a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect
+        a.issue-form.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect href="/edit/issue/#{@issue.uuid}"
             | Edit
-        form.delete-form action="/delete/issue" method="post" style="display: inline-block;"
-            input.hidden type="text" name="issue" value=@issue.uuid
-            input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Delete"
+        - if @issue.solved
+            form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                input.hidden type="text" name="issue" value=@issue.uuid
+                input.hidden type="text" name="solved" value="n"
+                input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Mark as not solved"
+        - else
+            form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                input.hidden type="text" name="issue" value=@issue.uuid
+                input.hidden type="text" name="solved" value="y"
+                input.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect type="submit" value="Mark as solved"
+        - if @user.permission_admin
+            form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
+                input.hidden type="text" name="issue" value=@issue.uuid
+                input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Delete"
