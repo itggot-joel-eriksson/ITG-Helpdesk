@@ -15,6 +15,7 @@ class User
     has n, :issues
     has n, :faqs
     has n, :attachments
+    has n, :events
 
     def self.authorize(app:, params:)
         client_secrets = Google::APIClient::ClientSecrets.load || Google::APIClient::ClientSecrets.new(JSON.parse(ENV["GOOGLE_CLIENT_SECRETS"]))
@@ -53,8 +54,10 @@ class User
                     # remove issues
                     # remove files
                     # remove settings
-                    # remove comments
+                    # remove events
                     # if remove_user is an admin make another admin delete that admin as well
+                    Issue.all(user_id: remove_user.id).destroy!
+                    # Attachment.all(user_id: remove_user.id).destroy!
                     remove_user.destroy!
                 else
                     return throw_error(app: self, code: 404, message: "not found")

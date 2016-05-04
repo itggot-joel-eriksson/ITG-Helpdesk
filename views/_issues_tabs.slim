@@ -1,12 +1,12 @@
 #unsolved-issues-panel.mdl-tabs__panel.is-active
     - if @unsolved_issues.empty?
-        h4 There are no unsolved issues!
+        h4 There are no open issues!
         p
             | To report an issue click the add button in the bottom right corner or click&nbsp;
             a href="/create/issue" here.
     - else
         noscript
-            h1 Unsolved issues
+            h4 Open issues
         - for issue in @unsolved_issues
             .mdl-list
                 .mdl-list__item
@@ -17,13 +17,13 @@
                         span.material-icons mode_edit
 #solved-issues-panel.mdl-tabs__panel
     - if @solved_issues.empty?
-        h4 There are no solved issues!
+        h4 There are no closed issues!
         p
             | To report an issue click the add button in the bottom right corner or click&nbsp;
             a href="/create/issue" here.
     - else
         noscript
-            h1 Solved issues
+            h4 Closed issues
         - for issue in @solved_issues
             .mdl-list
                 .mdl-list__item

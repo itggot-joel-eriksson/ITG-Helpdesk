@@ -52,38 +52,43 @@ html
                             | ITG-Helpdesk
                     .mdl-layout-spacer
                     nav.mdl-navigation.mdl-layout--large-screen-only
-                        - if @user.permission_admin || @user.permission_teacher
-                            a.mdl-navigation__link href="/users" Users
                         a.mdl-navigation__link href="/issues" Issues
                         a.mdl-navigation__link href="/faq" FAQ
-                        button.mdl-button.mdl-js-button.mdl-button--icon.mdl-js-ripple-effect#avatar-menu-lower-right
+                        button.mdl-button.mdl-js-button.mdl-button--icon.mdl-js-ripple-effect#avatar-menu
                             img src=@user[:avatar] style="height: 100%;"
-                        ul.mdl-menu.mdl-menu--bottom-right.mdl-js-menu.mdl-js-ripple-effect for="avatar-menu-lower-right"
-                            a.mdl-menu__item.mdl-menu__item--full-bleed-divider href="/settings" Settings
+                        ul.mdl-menu.mdl-menu--bottom-right.mdl-js-menu.mdl-js-ripple-effect for="avatar-menu"
+                            a.mdl-menu__item href="/settings" Settings
+                            - if @user.permission_admin || @user.permission_teacher
+                                a.mdl-menu__item href="/users" Users
                             a.mdl-menu__item href="/signout" Sign out
             .mdl-layout__drawer
                 span.mdl-layout-title
                     img.logo src="/img/itg_logo.svg" /
                 nav.mdl-navigation
                     a.mdl-navigation__link href="/issues"
-                        i.material-icons warning
+                        span.material-icons assignment_late
                         |  Issues
                     a.mdl-navigation__link href="/faq"
-                        i.material-icons question_answer
+                        span.material-icons question_answer
                         |  FAQ
                     .mdl-navigation--bottom
+                        - if @user.permission_admin || @user.permission_teacher
+                            a.mdl-navigation__link href="/users"
+                                span.material-icons people
+                                |  Users
                         a.mdl-navigation__link href="/settings"
-                            i.material-icons settings
+                            span.material-icons settings
                             |  Settings
                         a.mdl-navigation__link href="/signout"
-                            i.material-icons cancel
+                            span.material-icons cancel
                             |  Sign out
             main.mdl-layout__content
                 .page-content
                     == yield
 
-                    a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored#create-issue href="/create/issue"
-                        i.material-icons add
+                    - if !@user.blocked || @user.permission_admin || @user.permission_teacher
+                        a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored#create-issue href="/create/issue"
+                            i.material-icons add
 
                 footer.mdl-mini-footer
                     .mdl-mini-footer__left-section

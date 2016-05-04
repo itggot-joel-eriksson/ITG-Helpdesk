@@ -6,10 +6,10 @@
             - for article in @articles
                 .mdl-list__item
                     span.mdl-list__item-primary-content
-                        - if article.user.avatar
+                        - if article.user.avatar == nil
+                            span.material-icons.mdl-list__item-avatar person
+                        - else
                             img.mdl-list__item-avatar src=article.user.avatar alt=article.user.name style="background-color: #FFFFFF;"
-                        -else
-                            i.material-icons.mdl-list__item-avatar person
                         a href="view/faq/#{article.uuid}" = article.question
                     a.mdl-list__item-secondary-action href="#"
                         i.material-icons star

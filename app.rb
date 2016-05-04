@@ -48,7 +48,7 @@ class App < Sinatra::Base
             redirect "/"
         else
             User.revoke(app: self, access_token: access_token)
-            session[:invalid_domain] = true
+            flash[:invalid_domain] = true
             redirect "/signin"
         end
     end
@@ -76,13 +76,14 @@ class App < Sinatra::Base
     # List all issues
     get "/issues/?" do
         if @user.permission_admin
-            @assigned_issues = Issue.all(solved: false)
-            @unassigned_issues = Issue.all(id: 3, solved: false)
-            @unsolved_issues = Issue.all(solved: false)
-            @solved_issues = Issue.all(solved: true)
+            @assigned_issues = Issue.all(closed: false)
+            @unassigned_issues = Issue.all(id: 3, closed: false)
+            @unsolved_issues = Issue.all(closed: false)
+            @solved_issues = Issue.all(closed: true)
+            @issues = Issue.all(order: [:updated_at.asc])
         else
-            @unsolved_issues = Issue.all(user_id: @user.id, solved: false)
-            @solved_issues = Issue.all(user_id: @user.id, solved: true)
+            @unsolved_issues = Issue.all(user_id: @user.id, closed: false)
+            @solved_issues = Issue.all(user_id: @user.id, closed: true)
         end
         slim :issues
     end
@@ -97,11 +98,11 @@ class App < Sinatra::Base
         if @user.permission_admin
             @assigned_issues = @category.issues
             @unassigned_issues = @category.issues
-            @unsolved_issues = @category.issues(solved: false)
-            @solved_issues = @category.issues(solved: true)
+            @unsolved_issues = @category.issues(closed: false)
+            @solved_issues = @category.issues(closed: true)
         else
-            @unsolved_issues = @category.issues(user_id: @user.id, solved: false)
-            @solved_issues = @category.issues(user_id: @user.id, solved: true)
+            @unsolved_issues = @category.issues(user_id: @user.id, closed: false)
+            @solved_issues = @category.issues(user_id: @user.id, closed: true)
         end
 
         slim :issues
@@ -121,16 +122,19 @@ class App < Sinatra::Base
 
     # Show the interface for creating an issue
     get "/create/issue/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission_admin && !@user.permission_teacher
         @categories = Category.all(order: [:title.asc])
         slim :create_issue
     end
 
     # Report the issue to the database
     post "/create/issue/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission_admin && !@user.permission_teacher
         issue = Issue.report(app: self, user: @user, params: params)
         if issue.valid?
             Attachment.upload(app: self, user: @user, issue: issue, params: params)
-			redirect "/issues"
+            flash[:success] = true
+			redirect "/view/issue/#{issue.uuid}"
         else
             flash[:error] = issue.errors.to_h
             redirect back
@@ -159,7 +163,7 @@ class App < Sinatra::Base
     end
 
     post "/edit/issue/solved" do
-        Issue.mark_solved(app: self, user: @user, params: params)
+        Issue.close(app: self, user: @user, params: params)
         redirect "/issues"
     end
 

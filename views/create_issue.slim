@@ -28,9 +28,10 @@
                     .mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
                         input.mdl-textfield__input type="text" name="custom_email"
                         label.mdl-textfield__label Custom email
+                    == partial "_error_messages", locals: {errors: flash[:error], property: :custom_email}
                 .mdl-cell.mdl-cell--4-col
                     label.mdl-switch.mdl-js-switch.mdl-js-ripple-effect
-                        input.mdl-switch__input type="checkbox" checked="true"
+                        input.mdl-switch__input type="checkbox" name="notifications" checked="true"
                         span.mdl-switch__label Get notified
             br
             .file_input_div

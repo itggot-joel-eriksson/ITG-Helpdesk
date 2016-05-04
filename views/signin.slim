@@ -38,16 +38,16 @@ html
                 .signin-footer
                     img.signin-logo src="/img/itg_logo.svg" draggable="false"
 
-        #error-snackbar.mdl-js-snackbar.mdl-snackbar
-            .mdl-snackbar__text
-            button.mdl-snackbar__action type="button"
-
-        - if session[:invalid_domain]
+        - if flash[:invalid_domain]
+            #error-snackbar.mdl-js-snackbar.mdl-snackbar
+                .mdl-snackbar__text
+                button.mdl-snackbar__action type="button"
+                
             javascript:
                 function invalid_domain() {
                     var snackbarContainer = $("#error-snackbar").get(0);
                     var data = {
-                        message: "Error: Invalid domain",
+                        message: "Invalid domain",
                         timeout: 3000,
                     };
                     snackbarContainer.MaterialSnackbar.showSnackbar(data);

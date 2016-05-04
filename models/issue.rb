@@ -6,20 +6,29 @@ class Issue
 	property :title, String, required: true
 	property :description, Text, required: true
 	property :custom_email, String, format: :email_address
-	property :solved, Boolean, default: false
+	property :notifications, Boolean, default: true
+	property :closed, Boolean, default: false
 	property :created_at, EpochTime
 	property :updated_at, EpochTime
 
 	belongs_to :user
 	has n, :attachments
-	has n, :categories, :through => Resource
+	has n, :categories, through: Resource
+	has n, :events
 
 	def self.report(app:, user:, params:)
 		description = ""
 		params[:description].squeeze("\n").split("\n").each do |line|
 			description << "#{line}\n\n"
 		end
-		issue = Issue.create(uuid: SecureRandom.uuid, title: params[:title], description: description, user_id: user.id)
+		if params[:custom_email]
+			issue = Issue.create(uuid: SecureRandom.uuid, title: params[:title], description: description, custom_email: params[:custom_email], notifications: params[:notifications] == "on", user_id: user.id)
+		else
+			issue = Issue.create(uuid: SecureRandom.uuid, title: params[:title], description: description, notifications: params[:notifications] == "on", user_id: user.id)
+		end
+
+		Event.create(uuid: SecureRandom.uuid, type: :open, user_id: user.id, issue_id: issue.id)
+
         if params[:category]
             params[:category].each do |category|
                 issue.categories << Category.first(uuid: category)
@@ -52,16 +61,18 @@ class Issue
 		issue.destroy!
 	end
 
-	def self.mark_solved(app:, user:, params:)
+	def self.close(app:, user:, params:)
 		issue = Issue.first(uuid: params[:issue])
 		unless issue
 			return throw_error(app: self, code: 404, message: "not found")
 		end
 
 		if params[:solved] == "y"
-			issue.update(solved: true)
+			issue.update(closed: true)
+			Event.create(uuid: SecureRandom.uuid, type: :close, user_id: user.id, issue_id: issue.id)
 		elsif params[:solved] == "n"
-			issue.update(solved: false)
+			issue.update(closed: false)
+			Event.create(uuid: SecureRandom.uuid, type: :reopen, user_id: user.id, issue_id: issue.id)
 		end
 	end
 end

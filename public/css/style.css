@@ -11,6 +11,14 @@ header .material-icons {
 .mdl-layout__drawer {
     border: none !important;
 }
+
+.mdl-badge.mdl-badge--overlap:after {
+    right: -25px;
+}
+
+.mdl-card {
+    min-height: 0;
+}
 /* END OF MONKEY PATCH */
 
 body {
@@ -88,11 +96,13 @@ body {
     width: 256px;
     height: 256px;
 }
+
 .card-image > .mdl-card__actions {
     height: 52px;
     padding: 16px;
     background: rgba(0, 0, 0, 0.2);
 }
+
 .card-image__filename {
     color: #fff;
     font-size: 14px;
@@ -157,6 +167,10 @@ body {
 
 .text-align--center {
     text-align: center;
+}
+
+.octicon {
+    font-size: 1.7em;
 }
 
 @media (min-height: 416px) {

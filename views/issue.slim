@@ -2,30 +2,41 @@
     .mdl-card__title
         h2.mdl-card__title-text = @issue.title
     .mdl-card__supporting-text
-        p == @description
+        span == @description
 
         - for attachment in @attachments
             a href=attachment.file
+
                 - if Attachment.image?(attachment.file)
                     span.fa.fa-file-image-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.audio?(attachment.file)
                     span.fa.fa-file-audio-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.video?(attachment.file)
                     span.fa.fa-file-video-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.archive?(attachment.file)
                     span.fa.fa-file-archive-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.code?(attachment.file)
                     span.fa.fa-file-code-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.text?(attachment.file)
                     span.fa.fa-file-text-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.ms_word?(attachment.file)
                     span.fa.fa-file-word-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.ms_powerpoint?(attachment.file)
                     span.fa.fa-file-powerpoint-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.ms_excel?(attachment.file)
                     span.fa.fa-file-excel-o.fa-3x id=File.basename(attachment.file)
+
                 - elsif Attachment.pdf?(attachment.file)
                     span.fa.fa-file-pdf-o.fa-3x id=File.basename(attachment.file)
+
                 - else
                     span.fa-stack.fa-3x id=File.basename(attachment.file)
                         span.fa.fa-file-o.fa-stack-2x
@@ -38,17 +49,62 @@
     .mdl-card__actions.mdl-card--border
         a.issue-form.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect href="/edit/issue/#{@issue.uuid}"
             | Edit
-        - if @issue.solved
+        - if @issue.closed
             form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
                 input.hidden type="text" name="issue" value=@issue.uuid
                 input.hidden type="text" name="solved" value="n"
-                input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Mark as not solved"
+                input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Reopen issue"
+
         - else
             form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
                 input.hidden type="text" name="issue" value=@issue.uuid
                 input.hidden type="text" name="solved" value="y"
-                input.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect type="submit" value="Mark as solved"
+                input.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect type="submit" value="Close issue"
+
         - if @user.permission_admin
             form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
                 input.hidden type="text" name="issue" value=@issue.uuid
                 input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Delete"
+
+- if @issue.events
+    - for event in @issue.events
+        .card-wide.mdl-card.mdl-shadow--2dp.mdl-cell
+            .mdl-card__supporting-text
+                - if event.type == :comment
+                    .mdl-list__item.mdl-list__item--two-line
+                        .mdl-list__item-primary-content
+                            img.mdl-list__item-avatar src=event.user.avatar alt=event.user.name style="background-color: #FFFFFF;"
+                            span #{event.user.name} commented
+                            span.mdl-list__item-sub-title #{event.created_at.for_humans}
+                    h4= event.title
+                    span== event.content
+
+                - else
+                    - action = "opened"
+                    - if event.type == :close
+                        - action = "closed"
+                    - elsif event.type == :reopen
+                        - action = "reopened"
+
+                    .mdl-list__item.mdl-list__item--two-line
+                        .mdl-list__item-primary-content
+                            img.mdl-list__item-avatar src=event.user.avatar alt=event.user.name style="background-color: #FFFFFF;"
+                            span #{event.user.name} #{action}
+                            span.mdl-list__item-sub-title= event.created_at.for_humans
+
+- if flash[:success]
+    #snackbar.mdl-js-snackbar.mdl-snackbar
+        .mdl-snackbar__text
+        button.mdl-snackbar__action type="button"
+
+    javascript:
+        function success() {
+            var snackbarContainer = $("#snackbar").get(0);
+            var data = {
+                message: "Your issue has been reported",
+                timeout: 3000,
+            };
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        }
+        componentHandler.upgradeElement($("#snackbar").get(0));
+        setTimeout(success, 500);
