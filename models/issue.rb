@@ -39,17 +39,13 @@ class Issue
 	end
 
 	def self.delete(app:, user:, params:)
-		unless user.permission_admin
-			return false
-		end
+		return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
 
 		issue = Issue.first(uuid: params[:issue])
-		unless issue
-			return throw_error(app: self, code: 404, message: "not found")
-		end
+		return throw_error(app: self, code: 404, message: "not found") unless issue
 
 		if issue.attachments
-			for attachment in issue.attachments
+			issue.attachments.each do |attachment|
 				file = "uploads/#{user.uuid}/#{File.basename(attachment.file)}"
 				if File.exist?(file)
 					File.unlink(file)
@@ -61,18 +57,39 @@ class Issue
 		issue.destroy!
 	end
 
+	def self.delete_all(app:, user:, user_id:)
+		return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
+
+		issues = Issue.all(user_id: user_id)
+		return throw_error(app: self, code: 404, message: "not found") unless issues
+
+		issues.each do |issue|
+			if issue.attachments
+				issue.attachments.each do |attachment|
+					file = "uploads/#{user.uuid}/#{File.basename(attachment.file)}"
+					if File.exist?(file)
+						File.unlink(file)
+					end
+				end
+			end
+			issue.attachments.destroy
+			issue.category_issues.destroy
+			issue.destroy!
+		end
+	end
+
 	def self.close(app:, user:, params:)
 		issue = Issue.first(uuid: params[:issue])
-		unless issue
-			return throw_error(app: self, code: 404, message: "not found")
-		end
+		return throw_error(app: self, code: 404, message: "not found") unless issue
 
 		if params[:solved] == "y"
 			issue.update(closed: true)
 			Event.create(uuid: SecureRandom.uuid, type: :close, user_id: user.id, issue_id: issue.id)
+			app.flash[:tab] = :closed
 		elsif params[:solved] == "n"
 			issue.update(closed: false)
 			Event.create(uuid: SecureRandom.uuid, type: :reopen, user_id: user.id, issue_id: issue.id)
+			app.flash[:tab] = :open
 		end
 	end
 end

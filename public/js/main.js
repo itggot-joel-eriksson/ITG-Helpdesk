@@ -1,4 +1,5 @@
 $(function() {
+    $("#create-issue").replaceWith("<button id='create-issue' class='mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='material-icons'>add</span></button>");
     $("textarea").autogrow();
 
     $(".delete-issue").on("submit", function(event) {
@@ -45,8 +46,6 @@ $(function() {
         });
     });
 
-
-
     $(".input_file").on("change", function() {
         var file_input = $(this).get(0);
         if (typeof file_input === "object" && file_input.files.length === 0) {
@@ -55,6 +54,30 @@ $(function() {
             $(".files-to-upload").text(file_input.files[0].name);
         } else if (typeof file_input === "object" && file_input.files.length > 1) {
             $(".files-to-upload").text(file_input.files.length + " files chosen");
+        }
+    });
+
+    var VISIBLE_CLASS = "is-showing-options",
+        HIDDEN_CLASS = "is-not-showing-options",
+        IS_SHOWING = false;
+    $("#create-issue").on("click", function(event) {
+        event.preventDefault();
+        if (IS_SHOWING) {
+            $("#fab_ctn").removeClass(VISIBLE_CLASS).addClass(HIDDEN_CLASS);
+            IS_SHOWING = false;
+        } else {
+            $(document).on("click", function(event) {
+                if (IS_SHOWING) {
+                    $("#fab_ctn").removeClass(VISIBLE_CLASS).addClass(HIDDEN_CLASS);
+                    IS_SHOWING = false;
+                    $(this).off("click");
+                }
+            });
+
+            $("#fab_ctn").removeClass(HIDDEN_CLASS).addClass(VISIBLE_CLASS);
+            setTimeout(function() {
+                IS_SHOWING = true;
+            }, 1);
         }
     });
 });

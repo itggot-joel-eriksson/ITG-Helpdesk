@@ -4,64 +4,75 @@
     .mdl-card__supporting-text
         span == @description
 
-        - for attachment in @attachments
-            a href=attachment.file
+        .mdl-grid
+            - for attachment in @attachments
+                a.mdl-cell.mdl-cell--6-col.mdl-cell--8-col-tablet href=attachment.file
 
-                - if Attachment.image?(attachment.file)
-                    span.fa.fa-file-image-o.fa-3x id=File.basename(attachment.file)
+                    - if Attachment.web_image?(attachment.file)
+                        .card-image.mdl-card.mdl-shadow--2dp id=File.basename(attachment.file) style="background: url(#{attachment.file}) center / cover;"
+                            .mdl-card__title.mdl-card--expand
+                            .mdl-card__actions
+                                span.card-image__filename= File.basename(attachment.file)
 
-                - elsif Attachment.audio?(attachment.file)
-                    span.fa.fa-file-audio-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.image?(attachment.file)
+                        span.fa.fa-file-image-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.video?(attachment.file)
-                    span.fa.fa-file-video-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.audio?(attachment.file)
+                        span.fa.fa-file-audio-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.archive?(attachment.file)
-                    span.fa.fa-file-archive-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.video?(attachment.file)
+                        span.fa.fa-file-video-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.code?(attachment.file)
-                    span.fa.fa-file-code-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.archive?(attachment.file)
+                        span.fa.fa-file-archive-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.text?(attachment.file)
-                    span.fa.fa-file-text-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.code?(attachment.file)
+                        span.fa.fa-file-code-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.ms_word?(attachment.file)
-                    span.fa.fa-file-word-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.text?(attachment.file)
+                        span.fa.fa-file-text-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.ms_powerpoint?(attachment.file)
-                    span.fa.fa-file-powerpoint-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.ms_word?(attachment.file)
+                        span.fa.fa-file-word-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.ms_excel?(attachment.file)
-                    span.fa.fa-file-excel-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.ms_powerpoint?(attachment.file)
+                        span.fa.fa-file-powerpoint-o.fa-3x id=File.basename(attachment.file)
 
-                - elsif Attachment.pdf?(attachment.file)
-                    span.fa.fa-file-pdf-o.fa-3x id=File.basename(attachment.file)
+                    - elsif Attachment.ms_excel?(attachment.file)
+                        span.fa.fa-file-excel-o.fa-3x id=File.basename(attachment.file)
 
-                - else
-                    span.fa-stack.fa-3x id=File.basename(attachment.file)
-                        span.fa.fa-file-o.fa-stack-2x
-                        strong.fa-stack-1x.fa-stack-text.file-text= File.extname(attachment.file)
+                    - elsif Attachment.pdf?(attachment.file)
+                        span.fa.fa-file-pdf-o.fa-3x id=File.basename(attachment.file)
 
-            .mdl-tooltip for=File.basename(attachment.file) #{File.basename(attachment.file)}
+                    - else
+                        span.fa-stack.fa-3x id=File.basename(attachment.file)
+                            span.fa.fa-file-o.fa-stack-2x
+                            strong.fa-stack-1x.fa-stack-text.file-text= File.extname(attachment.file)
+
+                - unless Attachment.web_image?(attachment.file)
+                    .mdl-tooltip for=File.basename(attachment.file) #{File.basename(attachment.file)}
         - for category in @issue.categories
             p
                 a href="/view/category/#{category.title}/issues"= category.title
     .mdl-card__actions.mdl-card--border
-        a.issue-form.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect href="/edit/issue/#{@issue.uuid}"
-            | Edit
+        - unless @issue.closed || !@user.blocked || @user.permission == :admin || @user.permission == :teacher
+            a.issue-form.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect href="/edit/issue/#{@issue.uuid}"
+                | Edit
         - if @issue.closed
-            form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
-                input.hidden type="text" name="issue" value=@issue.uuid
-                input.hidden type="text" name="solved" value="n"
-                input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Reopen issue"
+            - if !@user.blocked || @user.permission == :admin || @user.permission == :teacher
+                form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                    input.hidden type="text" name="issue" value=@issue.uuid
+                    input.hidden type="text" name="solved" value="n"
+                    input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Reopen issue"
 
         - else
-            form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
-                input.hidden type="text" name="issue" value=@issue.uuid
-                input.hidden type="text" name="solved" value="y"
-                input.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect type="submit" value="Close issue"
+            - if !@user.blocked || @user.permission == :admin || @user.permission == :teacher
+                form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
+                    input.hidden type="text" name="issue" value=@issue.uuid
+                    input.hidden type="text" name="solved" value="y"
+                    input.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect type="submit" value="Close issue"
 
-        - if @user.permission_admin
+        - if @user.permission == :admin
             form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
                 input.hidden type="text" name="issue" value=@issue.uuid
                 input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Delete"

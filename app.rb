@@ -61,13 +61,11 @@ class App < Sinatra::Base
 
     # Uploads
     get "/uploads/:uuid/:file" do |uuid, file|
-        if uuid == @user.uuid || @user.permission_admin || @user.permission_teacher
+        if uuid == @user.uuid || @user.permission == :admin || @user.permission == :teacher
             sending_file = File.join("uploads", uuid, file)
-            unless File.exist?(sending_file)
-                return throw_error(app: self, code: 403, message: "forbidden")
-            else
-                send_file sending_file
-            end
+            return throw_error(app: self, code: 404, message: "not found") unless File.exist?(sending_file)
+
+            send_file sending_file
         else
             return throw_error(app: self, code: 403, message: "forbidden")
         end
@@ -75,9 +73,8 @@ class App < Sinatra::Base
 
     # List all issues
     get "/issues/?" do
-        if @user.permission_admin
-            @assigned_issues = Issue.all(closed: false)
-            @unassigned_issues = Issue.all(id: 3, closed: false)
+        if @user.permission == :admin
+            @assigned_issues, @unassigned_issues = [], []
             @unsolved_issues = Issue.all(closed: false)
             @solved_issues = Issue.all(closed: true)
             @issues = Issue.all(order: [:updated_at.asc])
@@ -91,11 +88,9 @@ class App < Sinatra::Base
     # List all issues that has a certain category
     get "/view/category/:title/issues/?" do |title|
         @category = Category.first(title: title)
-        unless @category
-            return throw_error(app: self, code: 404, message: "not found")
-        end
+        return throw_error(app: self, code: 404, message: "not found") unless @category
 
-        if @user.permission_admin
+        if @user.permission == :admin
             @assigned_issues = @category.issues
             @unassigned_issues = @category.issues
             @unsolved_issues = @category.issues(closed: false)
@@ -122,14 +117,16 @@ class App < Sinatra::Base
 
     # Show the interface for creating an issue
     get "/create/issue/?" do
-        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission_admin && !@user.permission_teacher
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
+
         @categories = Category.all(order: [:title.asc])
         slim :create_issue
     end
 
     # Report the issue to the database
     post "/create/issue/?" do
-        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission_admin && !@user.permission_teacher
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
+
         issue = Issue.report(app: self, user: @user, params: params)
         if issue.valid?
             Attachment.upload(app: self, user: @user, issue: issue, params: params)
@@ -143,26 +140,35 @@ class App < Sinatra::Base
 
     # Show the interface to edit an issue
     get "/edit/issue/:uuid" do |uuid|
-        @categories = Category.all(order: [:title.asc])
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
+
         @issue = Issue.first(uuid: uuid)
-        unless @issue.user_id == @user.id || @user.permission_admin || @user.permission_teacher
-            return throw_error(app: self, code: 403, message: "forbidden")
-        end
+        return throw_error(app: self, code: 400, message: "bad request") if @issue.closed
+
+        @categories = Category.all(order: [:title.asc])
+        return throw_error(app: self, code: 403, message: "forbidden") unless @issue.user_id == @user.id || @user.permission == :admin || @user.permission == :teacher
         slim :edit_issue
     end
 
     # Update the database with edits made to an issue
     post "/edit/issue/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
+        issue = Issue.first(uuid: params[:issue])
+        return throw_error(app: self, code: 400, message: "bad request") if issue.closed
     end
 
     # Delete an issue along with its attachments from database and filesystem
     post "/delete/issue/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
+
         Issue.delete(app: self, user: @user, params: params)
         redirect "/issues"
     end
 
     post "/edit/issue/solved" do
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
+
         Issue.close(app: self, user: @user, params: params)
         redirect "/issues"
     end
@@ -173,11 +179,10 @@ class App < Sinatra::Base
         slim :faq
     end
 
+    # Read a faq article along with its attachments and categories
     get "/view/faq/:uuid/?" do |uuid|
         @article = Faq.first(uuid: uuid)
-        unless @article
-            return throw_error(app: self, code: 404, message: "not found")
-        end
+        return throw_error(app: self, code: 404, message: "not found") unless @article
 
         @answer = Kramdown::Document.new(@article.answer, :input => 'markdown').to_html
         slim :faq_article
@@ -195,21 +200,17 @@ class App < Sinatra::Base
 
     # User settings
     get "/users/?" do
-        unless @user.permission_admin || @user.permission_teacher
-            return throw_error(app: self, code: 403, message: "not found")
-        end
+        return throw_error(app: self, code: 403, message: "not found") unless @user.permission == :admin || @user.permission == :teacher
 
-        @admins = User.all(permission_admin: true, :order => [ :name.asc ])
-        @teachers = User.all(permission_teacher: true, :order => [ :name.asc ])
-        @students = User.all(permission_admin: false, permission_teacher: false, :order => [ :name.asc ])
+        @admins = User.all(permission: :admin, :order => [ :name.asc ])
+        @teachers = User.all(permission: :teacher, :order => [ :name.asc ])
+        @students = User.all(permission: :student, :order => [ :name.asc ])
 
         slim :users
     end
 
     post "/delete/user/?" do
-        unless @user.permission_admin
-            return throw_error(app: self, code: 403, message: "forbidden")
-        end
+        return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
 
         User.delete(app: self, user: @user, params: params)
         redirect "/users"

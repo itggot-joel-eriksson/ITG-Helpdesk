@@ -2,19 +2,20 @@
     .mdl-card__title
         h2.mdl-card__title-text Issues
     .mdl-tabs__tab-bar style="width: 100%;"
-        - if @user.permission_admin
-            a.mdl-tabs__tab.is-active href="#assigned-issues-panel" Assigned
-            a.mdl-tabs__tab href="#unassigned-issues-panel" Unassigned
-            a.mdl-tabs__tab href="#unsolved-issues-panel" Open
-            a.mdl-tabs__tab href="#solved-issues-panel" Closed
+
+        - if @user.permission == :admin
+            a.mdl-tabs__tab href="#assigned-issues-panel" class="#{"is-active" if flash[:tab] == :assigned || flash[:tab] == nil}" Assigned
+            a.mdl-tabs__tab href="#unassigned-issues-panel" class="#{"is-active" if flash[:tab] == :unassigned}" Unassigned
+            a.mdl-tabs__tab href="#unsolved-issues-panel" class="#{"is-active" if flash[:tab] == :open}" Open
+            a.mdl-tabs__tab href="#solved-issues-panel" class="#{"is-active" if flash[:tab] == :closed}" Closed
             a.mdl-tabs__tab href="#all-issues-panel" All
         - else
-            a.mdl-tabs__tab.is-active href="#unsolved-issues-panel"
+            a.mdl-tabs__tab href="#unsolved-issues-panel" class="#{"is-active" if flash[:tab] == :open || flash[:tab] == nil}"
                 span.mdl-badge.mdl-badge--overlap data-badge=@unsolved_issues.count Open issues
-            a.mdl-tabs__tab href="#solved-issues-panel"
+            a.mdl-tabs__tab href="#solved-issues-panel" class="#{"is-active" if flash[:tab] == :closed}"
                 span.mdl-badge.mdl-badge--overlap data-badge=@solved_issues.count Closed issues
     .mdl-card__supporting-text
-        - if @user.permission_admin
+        - if @user.permission == :admin
             == partial "_issues_admin_tabs"
-        - else @user.permission_admin
+        - else
             == partial "_issues_tabs"

@@ -1,4 +1,5 @@
-#students-panel.mdl-tabs__panel.is-active
+#students-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :students || flash[:tab] == nil}"
+
     - if @students.empty?
         h4 There are no students!
     - else
@@ -11,7 +12,8 @@
                         img.mdl-list__item-avatar src=student.avatar alt=student.name style="background-color: #FFFFFF;"
                         span= student.name
                         a.mdl-list__item-sub-title href="mailto:#{student.email}"= student.email
-#teachers-panel.mdl-tabs__panel
+#teachers-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :teachers}"
+
     - if @teachers.empty?
         h4 There are no teachers!
     - else
@@ -24,7 +26,8 @@
                         img.mdl-list__item-avatar src=teacher.avatar alt=teacher.name style="background-color: #FFFFFF;"
                         span= teacher.name
                         a.mdl-list__item-sub-title href="mailto:#{teacher.email}"= teacher.email
-#admins-panel.mdl-tabs__panel
+#admins-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :admins}"
+
     - if @admins.empty?
         h4 Uh-oh, found no admins, that's no good!
     - else

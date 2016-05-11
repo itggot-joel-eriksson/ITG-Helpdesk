@@ -1,4 +1,5 @@
-#students-panel.mdl-tabs__panel.is-active
+#students-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :students || flash[:tab] == nil}"
+
     - if @students.empty?
         h4 There are no students!
     - else
@@ -15,7 +16,8 @@
                         input.hidden type="text" name="user" value=student.uuid
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="1delete_#{student.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="1delete_#{student.uuid}" Remove user
-#teachers-panel.mdl-tabs__panel
+#teachers-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :teachers}"
+
     - if @teachers.empty?
         h4 There are no teachers!
     - else
@@ -32,7 +34,8 @@
                         input.hidden type="text" name="user" value=teacher.uuid
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="2delete_#{teacher.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="2delete_#{teacher.uuid}" Remove user
-#admins-panel.mdl-tabs__panel
+#admins-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :admins}"
+
     - if @admins.empty?
         h4 Uh-oh, found no admins, that's no good!
     - else
@@ -45,7 +48,9 @@
                         img.mdl-list__item-avatar src=admin.avatar alt=admin.name style="background-color: #FFFFFF;"
                         span= admin.name
                         a.mdl-list__item-sub-title href="mailto:#{admin.email}"= admin.email
-                    form.issue-form action="/delete/user" method="post" style="display: inline-block;"
-                        input.hidden type="text" name="user" value=admin.uuid
-                        input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{admin.uuid}" type="submit" value="delete"
-                    .mdl-tooltip for="3delete_#{admin.uuid}" Remove user
+                    span.material-icons.mdl-color-text--primary-dark id="3delete_#{admin.uuid}" verified_user
+                    .mdl-tooltip for="3delete_#{admin.uuid}" Admin
+                    / form.issue-form action="/delete/user" method="post" style="display: inline-block;"
+                    /     input.hidden type="text" name="user" value=admin.uuid
+                    /     input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{admin.uuid}" type="submit" value="delete"
+                    / .mdl-tooltip for="3delete_#{admin.uuid}" Remove user

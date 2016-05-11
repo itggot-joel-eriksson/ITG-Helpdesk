@@ -1,6 +1,7 @@
-#assigned-issues-panel.mdl-tabs__panel.is-active
+#assigned-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :assigned || flash[:tab] == nil}"
+
     - if @assigned_issues.empty?
-        h4 You have no assigned issues!
+        h4 You have no issues assigned to you!
     - else
         noscript
             h4 Assigned issues
@@ -20,7 +21,7 @@
                         input.hidden type="text" name="issue" value=issue.uuid
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="1delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="1delete_#{issue.uuid}" Delete issue
-#unassigned-issues-panel.mdl-tabs__panel
+#unassigned-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :unassigned}"
     - if @unassigned_issues.empty?
         h4 There are no unassigned issues!
     - else
@@ -42,7 +43,7 @@
                         input.hidden type="text" name="issue" value=issue.uuid
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="2delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="2delete_#{issue.uuid}" Delete issue
-#unsolved-issues-panel.mdl-tabs__panel
+#unsolved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :open}"
     - if @unsolved_issues.empty?
         h4 There are no open issues!
     - else
@@ -64,7 +65,7 @@
                         input.hidden type="text" name="issue" value=issue.uuid
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="3delete_#{issue.uuid}" Delete issue
-#solved-issues-panel.mdl-tabs__panel
+#solved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :closed}"
     - if @solved_issues.empty?
         h4 There are no closed issues!
     - else

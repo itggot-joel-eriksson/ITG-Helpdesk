@@ -9,12 +9,12 @@ class Seeder
 	end
 
 	def self.users!
-		User.create(uuid: SecureRandom.uuid, name: "Joel Eriksson", avatar: "https://lh3.googleusercontent.com/-1w8EfxUcvZw/AAAAAAAAAAI/AAAAAAAAADs/BS8JXVhiD7g/photo.jpg", email: "joel.eriksson3@itggot.se", permission_admin: true)
-		User.create(uuid: SecureRandom.uuid, name: "Hanna Nyström", avatar: "https://camo.githubusercontent.com/a5af6e7108dcf26651439e78e22b612b96a34664/68747470733a2f2f692e696d6775722e636f6d2f376734376d33352e6a7067", email: "hanna.nystrom@itggot.se")
-		User.create(uuid: SecureRandom.uuid, name: "Philip Lund", avatar: "https://camo.githubusercontent.com/00d782cc28ac06cbb2811245049fd168d3edd0aa/68747470733a2f2f692e696d6775722e636f6d2f4830344e356e502e6a7067", email: "philip.lund@itggot.se")
-		User.create(uuid: SecureRandom.uuid, name: "Teddy Henriksson", avatar: "https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067", email: "teddy.henriksson@itggot.se", permission_admin: true)
-		User.create(uuid: SecureRandom.uuid, name: "Lydia Hedlund", avatar: "https://camo.githubusercontent.com/800ceaf38d9ee0a77af0888b230347d77e1722e4/68747470733a2f2f692e696d6775722e636f6d2f326851457a59322e6a7067", email: "lydia.hedlund@itggot.se", permission_teacher: true)
-		User.create(uuid: SecureRandom.uuid, name: "Eddie Lindgren", avatar: "https://camo.githubusercontent.com/60af6b29ec18c44f1cee896312d62a3e79e7359a/68747470733a2f2f692e696d6775722e636f6d2f346a6c573563502e6a7067", email: "eddie.lindgren@itggot.se", permission_admin: true)
+		User.create(uuid: SecureRandom.uuid, name: "Joel Eriksson", avatar: "https://lh3.googleusercontent.com/-1w8EfxUcvZw/AAAAAAAAAAI/AAAAAAAAADs/BS8JXVhiD7g/photo.jpg", email: "joel.eriksson3@itggot.se", permission: :admin)
+		User.create(uuid: SecureRandom.uuid, name: "Hanna Nyström", avatar: "https://camo.githubusercontent.com/a5af6e7108dcf26651439e78e22b612b96a34664/68747470733a2f2f692e696d6775722e636f6d2f376734376d33352e6a7067", email: "hanna.nystrom@itggot.se", permission: :student)
+		User.create(uuid: SecureRandom.uuid, name: "Philip Lund", avatar: "https://camo.githubusercontent.com/00d782cc28ac06cbb2811245049fd168d3edd0aa/68747470733a2f2f692e696d6775722e636f6d2f4830344e356e502e6a7067", email: "philip.lund@itggot.se", permission: :student)
+		User.create(uuid: SecureRandom.uuid, name: "Teddy Henriksson", avatar: "https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067", email: "teddy.henriksson@itggot.se", permission: :admin)
+		User.create(uuid: SecureRandom.uuid, name: "Lydia Hedlund", avatar: "https://camo.githubusercontent.com/800ceaf38d9ee0a77af0888b230347d77e1722e4/68747470733a2f2f692e696d6775722e636f6d2f326851457a59322e6a7067", email: "lydia.hedlund@itggot.se", permission: :teacher)
+		User.create(uuid: SecureRandom.uuid, name: "Eddie Lindgren", avatar: "https://camo.githubusercontent.com/60af6b29ec18c44f1cee896312d62a3e79e7359a/68747470733a2f2f692e696d6775722e636f6d2f346a6c573563502e6a7067", email: "eddie.lindgren@itggot.se", permission: :admin)
 	end
 
 	def self.categories!
@@ -56,9 +56,9 @@ class Seeder
 	end
 
 	def self.attachments!
-		Attachment.create(uuid: SecureRandom.uuid, file: "/123/sdjfb.png", issue_id: 1, user_id: 1)
-		Attachment.create(uuid: SecureRandom.uuid, file: "/456/sdjfb.png", issue_id: 2, user_id: 2)
-		Attachment.create(uuid: SecureRandom.uuid, file: "/789/sdjfb.png", issue_id: 3, user_id: 3)
+		Attachment.create(uuid: SecureRandom.uuid, file: "/uploads/123/sdjfb.png", issue_id: 1, user_id: 1)
+		Attachment.create(uuid: SecureRandom.uuid, file: "/uploads/456/sdjfb.png", issue_id: 2, user_id: 2)
+		Attachment.create(uuid: SecureRandom.uuid, file: "/uploads/789/sdjfb.png", issue_id: 3, user_id: 3)
 	end
 
 end

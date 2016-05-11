@@ -9,8 +9,7 @@ class User
     property :name, String
     property :avatar, URI
     property :blocked, Boolean, default: false
-    property :permission_admin, Boolean, default: false
-    property :permission_teacher, Boolean, default: false
+    property :permission, Enum[:student, :teacher, :admin], default: :student
 
     has n, :issues
     has n, :faqs
@@ -47,24 +46,28 @@ class User
     end
 
     def self.delete(app:, user:, params:)
-        if user.permission_admin
-            unless User.all(permission_admin: true).count <= 1
-                remove_user = User.first(uuid: params[:user])
-                if remove_user
-                    # remove issues
-                    # remove files
-                    # remove settings
-                    # remove events
-                    # if remove_user is an admin make another admin delete that admin as well
-                    Issue.all(user_id: remove_user.id).destroy!
-                    # Attachment.all(user_id: remove_user.id).destroy!
-                    remove_user.destroy!
-                else
-                    return throw_error(app: self, code: 404, message: "not found")
-                end
+        return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
+        remove_user = User.first(uuid: params[:user])
+        if remove_user
+            if remove_user.permission == :admin
+                app.flash[:tab] = :admins
+                return throw_error(app: self, code: 400, message: "bad request") if User.all(permission: :admin).count <= 1
+            elsif remove_user.permission == :teacher
+                app.flash[:tab] = :teachers
+            else
+                app.flash[:tab] = :students
             end
+
+            # remove files
+            # remove settings
+            # remove events
+            # if remove_user is an admin make another admin delete that admin as well
+            Issue.delete_all(app: self, user: user, user_id: remove_user.id)
+            # Issue.all(user_id: remove_user.id).destroy!
+            # Attachment.all(user_id: remove_user.id).destroy!
+            remove_user.destroy!
         else
-            return throw_error(app: self, code: 403, message: "forbidden")
+            return throw_error(app: self, code: 404, message: "not found")
         end
     end
 end

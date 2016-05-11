@@ -40,6 +40,11 @@ class Attachment
         end
     end
 
+    def self.web_image?(file)
+        web_image_extensions = [".gif", ".jpeg", ".jpg", ".png", ".svg"]
+        return web_image_extensions.include?(File.extname(file))
+    end
+
     def self.image?(file)
         image_extensions = [".bmp", ".cmx", ".cod", ".eps", ".gif", ".ico", ".ief", ".jfif", ".jpe", ".jpeg", ".jpg", ".pbm", ".pgm", ".png", ".ras", ".rgb", ".svg", ".tif", ".tiff", ".webp", ".xbm", ".xpm", ".xwd"]
         return image_extensions.include?(File.extname(file))

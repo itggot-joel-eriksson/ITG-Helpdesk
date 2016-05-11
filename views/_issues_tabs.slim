@@ -1,4 +1,4 @@
-#unsolved-issues-panel.mdl-tabs__panel.is-active
+#unsolved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :open || flash[:tab] == nil}"
     - if @unsolved_issues.empty?
         h4 There are no open issues!
         p
@@ -15,7 +15,7 @@
                         span= issue.title
                     a.mdl-list__item-secondary-action.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.mdl-color-text--primary href="/edit/issue/#{issue.uuid}"
                         span.material-icons mode_edit
-#solved-issues-panel.mdl-tabs__panel
+#solved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :closed}"
     - if @solved_issues.empty?
         h4 There are no closed issues!
         p

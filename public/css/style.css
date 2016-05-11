@@ -19,6 +19,10 @@ header .material-icons {
 .mdl-card {
     min-height: 0;
 }
+
+.mdl-card__supporting-text {
+    width: auto;
+}
 /* END OF MONKEY PATCH */
 
 body {
@@ -67,13 +71,6 @@ body {
     margin: auto;
 }
 
-#create-issue {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    z-index: 10;
-}
-
 .page-content {
     position: relative;
     min-height: calc(100% - 180px);
@@ -93,8 +90,8 @@ body {
 }
 
 .card-image.mdl-card {
-    width: 256px;
-    height: 256px;
+    width: 100%;
+    min-height: 256px;
 }
 
 .card-image > .mdl-card__actions {
@@ -169,10 +166,6 @@ body {
     text-align: center;
 }
 
-.octicon {
-    font-size: 1.7em;
-}
-
 @media (min-height: 416px) {
     .mdl-navigation--bottom {
         position: absolute;
@@ -184,5 +177,136 @@ body {
 @media (max-width: 800px) {
     .card-wide.mdl-card {
         width: 90%;
+    }
+}
+
+.mdl-button--fab_flinger-container {
+    position: fixed;
+    right: 35px;
+    bottom: 35px;
+    z-index: 10;
+}
+
+.mdl-button--fab_flinger-container.is-showing-options > a {
+    transition: -webkit-transform 0.1s linear;
+    transition: transform 0.1s linear;
+    transition: transform 0.1s linear, -webkit-transform 0.1s linear;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+}
+
+.mdl-button--fab_flinger-container.is-not-showing-options > a {
+    transition: -webkit-transform 0.1s linear;
+    transition: transform 0.1s linear;
+    transition: transform 0.1s linear, -webkit-transform 0.1s linear;
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+}
+
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options, .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column-reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+}
+
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a {
+    display: block;
+    -webkit-animation-name: enter;
+            animation-name: enter;
+    -webkit-animation-duration: 0.1s;
+            animation-duration: 0.1s;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+    -webkit-transform-origin: bottom center;
+            transform-origin: bottom center;
+}
+
+.mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a {
+    display: block;
+    -webkit-animation-name: exit;
+            animation-name: exit;
+    -webkit-animation-duration: 0.1s;
+            animation-duration: 0.1s;
+    -webkit-animation-fill-mode: backwards;
+            animation-fill-mode: backwards;
+    -webkit-transform-origin: bottom center;
+            transform-origin: bottom center;
+}
+
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(1), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(3) {
+    -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s;
+}
+
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(2), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(2) {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s;
+}
+
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(3), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(1) {
+    -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s;
+}
+
+.mdl-button--fab_flinger-container .mdl-button--fab_flinger-options {
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: 10px;
+}
+
+.mdl-button--fab_flinger-container .mdl-button--fab_flinger-options a {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+    display: none;
+}
+
+@-webkit-keyframes enter {
+    from {
+        -webkit-transform: scale(0);
+                transform: scale(0);
+    }
+
+    to {
+        -webkit-transform: scale(0.8);
+                transform: scale(0.8);
+    }
+}
+
+@keyframes enter {
+    from {
+        -webkit-transform: scale(0);
+                transform: scale(0);
+    }
+
+    to {
+        -webkit-transform: scale(0.8);
+                transform: scale(0.8);
+    }
+}
+
+@-webkit-keyframes exit {
+    from {
+        -webkit-transform: scale(0.8);
+                transform: scale(0.8);
+    }
+
+    to {
+        -webkit-transform: scale(0);
+                transform: scale(0);
+    }
+}
+
+@keyframes exit {
+    from {
+        -webkit-transform: scale(0.8);
+                transform: scale(0.8);
+    }
+
+    to {
+        -webkit-transform: scale(0);
+                transform: scale(0);
     }
 }
