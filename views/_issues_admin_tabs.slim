@@ -22,6 +22,7 @@
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="1delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="1delete_#{issue.uuid}" Delete issue
 #unassigned-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :unassigned}"
+
     - if @unassigned_issues.empty?
         h4 There are no unassigned issues!
     - else
@@ -44,6 +45,7 @@
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="2delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="2delete_#{issue.uuid}" Delete issue
 #unsolved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :open}"
+
     - if @unsolved_issues.empty?
         h4 There are no open issues!
     - else
@@ -66,6 +68,7 @@
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="3delete_#{issue.uuid}" Delete issue
 #solved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :closed}"
+
     - if @solved_issues.empty?
         h4 There are no closed issues!
     - else
@@ -88,7 +91,8 @@
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="4delete_#{issue.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="4delete_#{issue.uuid}" Delete issue
 #all-issues-panel.mdl-tabs__panel
-    - if @unsolved_issues.empty?
+
+    - if @issues.empty?
         h4 There are no issues!
     - else
         noscript
