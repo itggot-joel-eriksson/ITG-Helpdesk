@@ -3,6 +3,32 @@
 @import url("sweetalert.css");
 @import url("sweetalert-google.css");
 
+.letterlist {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    z-index: 0;
+}
+
+.letterlist .letter {
+    transform: scale(0.8);
+    transition: all .1s;
+}
+
+.letterlist .letter:hover {
+    transform: scale(2);
+}
+
 /* START OF MONKEY PATCH */
 header .material-icons {
     line-height: 1.75;
@@ -49,7 +75,7 @@ body {
 }
 
 .fix-height {
-    padding-top: 100px;
+    padding: 100px;
 }
 
 .card-signin.mdl-card {
@@ -187,7 +213,7 @@ body {
     z-index: 10;
 }
 
-.mdl-button--fab_flinger-container.is-showing-options > a {
+.mdl-button--fab_flinger-container.is-showing-options > button {
     transition: -webkit-transform 0.1s linear;
     transition: transform 0.1s linear;
     transition: transform 0.1s linear, -webkit-transform 0.1s linear;
@@ -195,7 +221,7 @@ body {
             transform: rotate(45deg);
 }
 
-.mdl-button--fab_flinger-container.is-not-showing-options > a {
+.mdl-button--fab_flinger-container.is-not-showing-options > button {
     transition: -webkit-transform 0.1s linear;
     transition: transform 0.1s linear;
     transition: transform 0.1s linear, -webkit-transform 0.1s linear;

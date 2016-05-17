@@ -5,27 +5,31 @@ class App < Sinatra::Base
     set :partial_template_engine, :slim
 
     before do
-        if session.has_key?(:credentials) && session.has_key?(:google_user)
+        if session.has_key?(:google_user)
             @google_user = session[:google_user]
             if @google_user["hd"] == "itggot.se"
                 @user = User.first(email: @google_user["email"])
-                if @user
-                    @user.update(name: @google_user["name"], avatar: @google_user["picture"])
-                    session[:id] = @user.id
-
-                    if request.path_info == "/oauth2callback" || request.path_info == "/signin"
-                        redirect "/"
-                    end
-                else
+                unless @user
                     session.destroy
-                    return throw_error(app: self, code: 403, message: "forbidden")
+                    flash[:invalid_user] = true
+                    redirect "/signin"
+                end
+                @user.update(name: @google_user["name"], avatar: @google_user["picture"])
+                session[:id] = @user.id
+
+                if request.path_info == "/oauth2callback" || request.path_info == "/signin"
+                    redirect "/"
                 end
             else
                 session.destroy
-                return throw_error(app: self, code: 403, message: "forbidden")
+                flash[:invalid_domain] = true
+                return throw_error(app: self, code: 403, message: "forbidden", layout: false)
             end
         elsif request.path_info != "/oauth2callback" && request.path_info != "/signin"
             redirect "/signin"
+        else
+            session.destroy
+            return throw_error(app: self, code: 403, message: "forbidden", layout: false)
         end
     end
 
@@ -45,6 +49,11 @@ class App < Sinatra::Base
         if user_info_or_redirect.is_a? String
             redirect user_info_or_redirect
         elsif user_info_or_redirect["hd"] == "itggot.se"
+            user = User.first(email: user_info_or_redirect["email"])
+            unless user
+                session.destroy
+                redirect "/signin"
+            end
             redirect "/"
         else
             User.revoke(app: self, access_token: access_token)
@@ -95,12 +104,13 @@ class App < Sinatra::Base
             @unassigned_issues = @category.issues
             @unsolved_issues = @category.issues(closed: false)
             @solved_issues = @category.issues(closed: true)
+            @issues = Issue.all
         else
             @unsolved_issues = @category.issues(user_id: @user.id, closed: false)
             @solved_issues = @category.issues(user_id: @user.id, closed: true)
         end
 
-        slim :issues
+        slim :category_issues
     end
 
     # Read an issue along with its attachments and categories
@@ -198,9 +208,9 @@ class App < Sinatra::Base
         slim :settings
     end
 
-    # User settings
+    # Show a list of all users
     get "/users/?" do
-        return throw_error(app: self, code: 403, message: "not found") unless @user.permission == :admin || @user.permission == :teacher
+        return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin || @user.permission == :teacher
 
         @admins = User.all(permission: :admin, :order => [ :name.asc ])
         @teachers = User.all(permission: :teacher, :order => [ :name.asc ])
@@ -209,6 +219,34 @@ class App < Sinatra::Base
         slim :users
     end
 
+    # Show an individual user
+    get "/user/:uuid" do |uuid|
+        return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin || @user.permission == :teacher
+
+        @this_user = User.first(uuid: uuid)
+        unless @this_user
+            return throw_error(app: self, code: 404, message: "not found") unless @user.permission == :admin || @user.permission == :teacher
+        end
+
+        slim :user
+    end
+
+    # Show the interface to add users
+    get "/add/users" do
+        @get_users_one = Unirest.get "https://www.googleapis.com/admin/directory/v1/users?domain=itggot.se&maxResults=500&viewType=domain_public&orderBy=givenName&access_token=#{session[:access_token]}"
+        return throw_error(app: self, code: 500, message: "internal server error") unless @get_users_one.code == 200
+        @users_one = @get_users_one.body
+
+        @get_users_two = Unirest.get "https://www.googleapis.com/admin/directory/v1/users?domain=itggot.se&maxResults=500&viewType=domain_public&orderBy=givenName&access_token=#{session[:access_token]}&pageToken=#{@users_one["nextPageToken"]}"
+        return throw_error(app: self, code: 500, message: "internal server error") unless @get_users_two.code == 200
+        @users_two = @get_users_two.body
+
+        @users_one_last_letter = @users_one["users"].last["name"]["givenName"][0].downcase
+
+        slim :add_users
+    end
+
+    # Delete a user along with everything made by that user
     post "/delete/user/?" do
         return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
 
@@ -223,7 +261,7 @@ class App < Sinatra::Base
 
     error do
         @error = env["sinatra.error"]
-        slim :error
+        slim :error, layout: false
     end
 
 end

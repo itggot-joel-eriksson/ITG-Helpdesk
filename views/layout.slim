@@ -94,23 +94,28 @@ html
                     - if !@user.blocked || @user.permission == :admin || @user.permission == :teacher
 
                         - if @user.permission == :admin || @user.permission == :teacher
-                        #fab_ctn.mdl-button--fab_flinger-container
-                            a#create-issue.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored href="/create/issue"
-                                span.material-icons add
-                            .mdl-button--fab_flinger-options
-                                a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/create/issue"
-                                    span.material-icons assignment_late
-                                - if @user.permission == :admin || @user.permission == :teacher
+                            #fab_ctn.mdl-button--fab_flinger-container
+                                button#fab_button.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored
+                                    span.material-icons add
+                                .mdl-button--fab_flinger-options
+                                    a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/create/issue"
+                                        span.material-icons assignment_late
                                     a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/users"
                                         span.material-icons people
-                                - if @user.permission == :admin
-                                    a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/add/users"
-                                        span.material-icons person_add
+                                    - if @user.permission == :admin
+                                        a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/add/users"
+                                            span.material-icons person_add
+                        - else
+                            #fab_ctn.mdl-button--fab_flinger-container
+                                a#create-issue.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored href="/create/issue"
+                                    span.material-icons assignment_late
 
                 footer.mdl-mini-footer
                     .mdl-mini-footer__left-section
                         .mdl-logo ITG-Helpdesk
                         ul.mdl-mini-footer__link-list
+                            li
+                                a href="https://github.com/itggot-joel-eriksson" target="_blank" Copyright &copy; 2016 Joel Eriksson
                             li
                                 a href="#" Help
                             li

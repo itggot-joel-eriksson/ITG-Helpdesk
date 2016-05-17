@@ -14,12 +14,11 @@ class Attachment
         if params[:files]
             params[:files].each do |file|
                 tmpfile = file[:tempfile]
-                name = file[:filename]
 
                 next if tmpfile.size.MB > 10
 
                 filename = SecureRandom.urlsafe_base64
-                extname = File.extname(name)
+                extname = File.extname(file[:filename])
 
                 unless Dir.exist?("uploads")
                     Dir.mkdir("uploads")

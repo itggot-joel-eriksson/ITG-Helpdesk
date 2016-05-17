@@ -1,0 +1,62 @@
+.letterlist
+    a.link--no-styling.letter href="#a" A
+    a.link--no-styling.letter href="#b" B
+    a.link--no-styling.letter href="#c" C
+    a.link--no-styling.letter href="#d" D
+    a.link--no-styling.letter href="#e" E
+    a.link--no-styling.letter href="#f" F
+    a.link--no-styling.letter href="#g" G
+    a.link--no-styling.letter href="#h" H
+    a.link--no-styling.letter href="#i" I
+    a.link--no-styling.letter href="#j" J
+    a.link--no-styling.letter href="#k" K
+    a.link--no-styling.letter href="#l" L
+    a.link--no-styling.letter href="#m" M
+    a.link--no-styling.letter href="#n" N
+    a.link--no-styling.letter href="#o" O
+    a.link--no-styling.letter href="#p" P
+    a.link--no-styling.letter href="#q" Q
+    a.link--no-styling.letter href="#r" R
+    a.link--no-styling.letter href="#s" S
+    a.link--no-styling.letter href="#t" T
+    a.link--no-styling.letter href="#u" U
+    a.link--no-styling.letter href="#v" V
+    a.link--no-styling.letter href="#w" W
+    a.link--no-styling.letter href="#x" X
+    a.link--no-styling.letter href="#y" Y
+    a.link--no-styling.letter href="#z" Z
+
+.card-wide.mdl-card.mdl-shadow--2dp.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+    .mdl-card__title
+        h2.mdl-card__title-text Users
+    .mdl-card__supporting-text
+        .mdl-list
+            - letters_one = []
+            - for user_one in @users_one["users"]
+                - letter = user_one["name"]["givenName"][0].downcase
+                - unless letters_one.include?(letter)
+                    p id=letter = letter.upcase
+                    - letters_one << letter
+                .mdl-list__item.mdl-list__item--two-line
+                    span.mdl-list__item-primary-content
+                        - if user_one.has_key?("thumbnailPhotoUrl")
+                            img.mdl-list__item-avatar src="#{user_one["thumbnailPhotoUrl"]}" alt=user_one["name"]["fullName"] style="background-color: #FFFFFF;"
+                        - else
+                            img.mdl-list__item-avatar src="/img/avatar/#{Random.rand(7)}.png" alt=user_one["name"]["fullName"] style="background-color: #FFFFFF;"
+                        span= user_one["name"]["fullName"]
+                        a.mdl-list__item-sub-title href="mailto:#{user_one["primaryEmail"]}"= user_one["primaryEmail"]
+            - letters_two = []
+            - letters_two << @users_one_last_letter
+            - for user_two in @users_two["users"]
+                - letter = user_two["name"]["givenName"][0].downcase
+                - unless letters_two.include?(letter)
+                    p id=letter = letter.upcase
+                    - letters_two << letter
+                .mdl-list__item.mdl-list__item--two-line id=letter
+                    span.mdl-list__item-primary-content
+                        - if user_two.has_key?("thumbnailPhotoUrl")
+                            img.mdl-list__item-avatar src="#{user_two["thumbnailPhotoUrl"]}" alt=user_two["name"]["fullName"] style="background-color: #FFFFFF;"
+                        - else
+                            img.mdl-list__item-avatar src="/img/avatar/#{Random.rand(7)}.png" alt=user_two["name"]["fullName"] style="background-color: #FFFFFF;"
+                        span= user_two["name"]["fullName"]
+                        a.mdl-list__item-sub-title href="mailto:#{user_two["primaryEmail"]}"= user_two["primaryEmail"]

@@ -1,5 +1,5 @@
 $(function() {
-    $("#create-issue").replaceWith("<button id='create-issue' class='mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='material-icons'>add</span></button>");
+    // $("#create-issue").replaceWith("<button id='create-issue' class='mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='material-icons'>add</span></button>");
     $("textarea").autogrow();
 
     $(".delete-issue").on("submit", function(event) {
@@ -46,6 +46,50 @@ $(function() {
         });
     });
 
+    $(".delete-user").on("submit", function(event) {
+        event.preventDefault();
+
+        var url = $(this).attr("action"),
+            data = $(this).serialize(),
+            method = $(this).attr("method");
+
+        swal({
+            title: "Are you sure you want to delete this user?",
+            text: "Along with the user, everything made by this user will be deleted.\n\nThe user (with issues, FAQs, uploads) will be lost forever! (A long time!)",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false,
+            html: false
+        }, function() {
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                success: function(data) {
+                    swal({
+                        title: "Deleted!",
+                        text: "The user has been deleted.",
+                        type: "success",
+                        showCancelButton: false,
+                        closeOnConfirm: false,
+                        html: false
+                    }, function() {
+                        window.location.replace("/users");
+                    });
+                },
+                error: function(jqXHR, error, errorThrown) {
+                    swal({
+                        title: "Could not the user",
+                        text: "An error occurred and the user could not be deleted.",
+                        type: "error"
+                    });
+                }
+            });
+        });
+    });
+
     $(".input_file").on("change", function() {
         var file_input = $(this).get(0);
         if (typeof file_input === "object" && file_input.files.length === 0) {
@@ -60,7 +104,7 @@ $(function() {
     var VISIBLE_CLASS = "is-showing-options",
         HIDDEN_CLASS = "is-not-showing-options",
         IS_SHOWING = false;
-    $("#create-issue").on("click", function(event) {
+    $("#fab_button").on("click", function(event) {
         event.preventDefault();
         if (IS_SHOWING) {
             $("#fab_ctn").removeClass(VISIBLE_CLASS).addClass(HIDDEN_CLASS);

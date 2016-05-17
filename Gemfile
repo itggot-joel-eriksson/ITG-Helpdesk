@@ -12,7 +12,7 @@ gem 'slim'
 gem 'tilt', '~> 1.4.1' #temporary fix
 gem 'racksh'
 gem 'rack-flash3', require: 'rack-flash'
-gem 'google-api-client', '0.9', require: 'google/api_client/client_secrets'
+gem 'google-api-client', '0.9', require: ['google/api_client/client_secrets', 'google/apis/admin_directory_v1']
 gem 'unirest'
 gem 'kramdown', require: 'kramdown'
 gem 'pry'

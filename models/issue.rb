@@ -44,6 +44,8 @@ class Issue
 		issue = Issue.first(uuid: params[:issue])
 		return throw_error(app: self, code: 404, message: "not found") unless issue
 
+		# Depending on where the issue was removed from add a flash to that tab
+
 		if issue.attachments
 			issue.attachments.each do |attachment|
 				file = "uploads/#{user.uuid}/#{File.basename(attachment.file)}"
