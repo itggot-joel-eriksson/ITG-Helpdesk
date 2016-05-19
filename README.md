@@ -2,6 +2,4 @@
 A helpdesk for ITG-Gymnasiet Göteborg
 
 ## License
-The MIT License
-
-Copyright (c) 2016 Joel Eriksson
+Copyright &copy; 2016 Joel Eriksson
