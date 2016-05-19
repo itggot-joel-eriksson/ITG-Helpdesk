@@ -8,7 +8,7 @@ class App < Sinatra::Base
         if session.has_key?(:google_user)
             @google_user = session[:google_user]
             if @google_user["hd"] == "itggot.se"
-                @user = User.first(email: @google_user["email"])
+                @user = User.first(email: @google_user["email"], active: true)
                 unless @user
                     session.destroy
                     flash[:invalid_user] = true
@@ -49,7 +49,7 @@ class App < Sinatra::Base
         if user_info_or_redirect.is_a? String
             redirect user_info_or_redirect
         elsif user_info_or_redirect["hd"] == "itggot.se"
-            user = User.first(email: user_info_or_redirect["email"])
+            user = User.first(email: user_info_or_redirect["email"], active: true)
             unless user
                 session.destroy
                 redirect "/signin"
@@ -232,18 +232,41 @@ class App < Sinatra::Base
     end
 
     # Show the interface to add users
-    get "/add/users" do
-        @get_users_one = Unirest.get "https://www.googleapis.com/admin/directory/v1/users?domain=itggot.se&maxResults=500&viewType=domain_public&orderBy=givenName&access_token=#{session[:access_token]}"
-        return throw_error(app: self, code: 500, message: "internal server error") unless @get_users_one.code == 200
-        @users_one = @get_users_one.body
-
-        @get_users_two = Unirest.get "https://www.googleapis.com/admin/directory/v1/users?domain=itggot.se&maxResults=500&viewType=domain_public&orderBy=givenName&access_token=#{session[:access_token]}&pageToken=#{@users_one["nextPageToken"]}"
-        return throw_error(app: self, code: 500, message: "internal server error") unless @get_users_two.code == 200
-        @users_two = @get_users_two.body
-
-        @users_one_last_letter = @users_one["users"].last["name"]["givenName"][0].downcase
-
+    get "/users/add/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
+        @users = User.all(active: false)
         slim :add_users
+    end
+
+    # Sync all users to database from Google Admin SDK
+    get "/users/sync/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
+
+        get_users_one = Unirest.get "https://www.googleapis.com/admin/directory/v1/users?domain=itggot.se&maxResults=500&viewType=domain_public&orderBy=givenName&access_token=#{session[:access_token]}"
+        return throw_error(app: self, code: 500, message: "internal server error") unless get_users_one.code == 200
+        users_one = get_users_one.body
+
+        users_one["users"].each do |user|
+            if user.has_key?("thumbnailPhotoUrl")
+                User.create(uuid: SecureRandom.uuid, name: user["name"]["fullName"], given_name: user["name"]["givenName"], family_name: user["name"]["familyName"], avatar: user["thumbnailPhotoUrl"], email: user["primaryEmail"], active: false)
+            else
+                User.create(uuid: SecureRandom.uuid, name: user["name"]["fullName"], given_name: user["name"]["givenName"], family_name: user["name"]["familyName"], avatar: "/img/avatar/#{Random.rand(7)}.png", email: user["primaryEmail"], active: false)
+            end
+        end
+
+        get_users_two = Unirest.get "https://www.googleapis.com/admin/directory/v1/users?domain=itggot.se&maxResults=500&viewType=domain_public&orderBy=givenName&access_token=#{session[:access_token]}&pageToken=#{users_one["nextPageToken"]}"
+        return throw_error(app: self, code: 500, message: "internal server error") unless get_users_two.code == 200
+        users_two = get_users_two.body
+
+        users_two["users"].each do |user|
+            if user.has_key?("thumbnailPhotoUrl")
+                User.create(uuid: SecureRandom.uuid, name: user["name"]["fullName"], given_name: user["name"]["givenName"], family_name: user["name"]["familyName"], avatar: user["thumbnailPhotoUrl"], email: user["primaryEmail"], active: false)
+            else
+                User.create(uuid: SecureRandom.uuid, name: user["name"]["fullName"], given_name: user["name"]["givenName"], family_name: user["name"]["familyName"], avatar: "/img/avatar/#{Random.rand(7)}.png", email: user["primaryEmail"], active: false)
+            end
+        end
+
+        redirect "/users/add"
     end
 
     # Delete a user along with everything made by that user
@@ -261,6 +284,7 @@ class App < Sinatra::Base
 
     error do
         @error = env["sinatra.error"]
+        @layout = false
         slim :error, layout: false
     end
 

@@ -9,22 +9,22 @@ class Seeder
 	end
 
 	def self.users!
-		User.create(uuid: SecureRandom.uuid, name: "Joel Eriksson", avatar: "https://lh3.googleusercontent.com/-1w8EfxUcvZw/AAAAAAAAAAI/AAAAAAAAADs/BS8JXVhiD7g/photo.jpg", email: "joel.eriksson3@itggot.se", permission: :admin)
-		User.create(uuid: SecureRandom.uuid, name: "Hanna Nyström", avatar: "https://camo.githubusercontent.com/a5af6e7108dcf26651439e78e22b612b96a34664/68747470733a2f2f692e696d6775722e636f6d2f376734376d33352e6a7067", email: "hanna.nystrom@itggot.se", permission: :student)
-		User.create(uuid: SecureRandom.uuid, name: "Philip Lund", avatar: "https://camo.githubusercontent.com/00d782cc28ac06cbb2811245049fd168d3edd0aa/68747470733a2f2f692e696d6775722e636f6d2f4830344e356e502e6a7067", email: "philip.lund@itggot.se", permission: :student)
-		User.create(uuid: SecureRandom.uuid, name: "Teddy Henriksson", avatar: "https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067", email: "teddy.henriksson@itggot.se", permission: :admin)
-		User.create(uuid: SecureRandom.uuid, name: "Lydia Hedlund", avatar: "https://camo.githubusercontent.com/800ceaf38d9ee0a77af0888b230347d77e1722e4/68747470733a2f2f692e696d6775722e636f6d2f326851457a59322e6a7067", email: "lydia.hedlund@itggot.se", permission: :teacher)
-		User.create(uuid: SecureRandom.uuid, name: "Eddie Lindgren", avatar: "https://camo.githubusercontent.com/60af6b29ec18c44f1cee896312d62a3e79e7359a/68747470733a2f2f692e696d6775722e636f6d2f346a6c573563502e6a7067", email: "eddie.lindgren@itggot.se", permission: :admin)
+		User.create(uuid: SecureRandom.uuid, name: "Joel Eriksson", given_name: "Joel", family_name: "Eriksson", avatar: "https://lh3.googleusercontent.com/-1w8EfxUcvZw/AAAAAAAAAAI/AAAAAAAAADs/BS8JXVhiD7g/photo.jpg", email: "joel.eriksson3@itggot.se", active: true, permission: :admin)
+		User.create(uuid: SecureRandom.uuid, name: "Hanna Nyström", given_name: "Hanna", family_name: "Nyström", avatar: "https://camo.githubusercontent.com/a5af6e7108dcf26651439e78e22b612b96a34664/68747470733a2f2f692e696d6775722e636f6d2f376734376d33352e6a7067", active: true, email: "hanna.nystrom@itggot.se", permission: :student)
+		User.create(uuid: SecureRandom.uuid, name: "Philip Lund", given_name: "Philip", family_name: "Lund", avatar: "https://camo.githubusercontent.com/00d782cc28ac06cbb2811245049fd168d3edd0aa/68747470733a2f2f692e696d6775722e636f6d2f4830344e356e502e6a7067", active: true, email: "philip.lund@itggot.se", permission: :student)
+		User.create(uuid: SecureRandom.uuid, name: "Teddy Henriksson", given_name: "Teddy", family_name: "Henriksson", avatar: "https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067", active: true, email: "teddy.henriksson@itggot.se", permission: :admin)
+		User.create(uuid: SecureRandom.uuid, name: "Lydia Hedlund", given_name: "Lydia", family_name: "Hedlund", avatar: "https://camo.githubusercontent.com/800ceaf38d9ee0a77af0888b230347d77e1722e4/68747470733a2f2f692e696d6775722e636f6d2f326851457a59322e6a7067", active: true, email: "lydia.hedlund@itggot.se", permission: :teacher)
+		User.create(uuid: SecureRandom.uuid, name: "Eddie Lindgren", given_name: "Eddie", family_name: "Lindgren", avatar: "https://camo.githubusercontent.com/60af6b29ec18c44f1cee896312d62a3e79e7359a/68747470733a2f2f692e696d6775722e636f6d2f346a6c573563502e6a7067", active: true, email: "eddie.lindgren@itggot.se", permission: :admin)
 	end
 
 	def self.categories!
-		@category_1 = Category.create(uuid: SecureRandom.uuid, title: "Annat")
+		@category_1 = Category.create(uuid: SecureRandom.uuid, title: "Other")
 		@category_2 = Category.create(uuid: SecureRandom.uuid, title: "Windows")
 		@category_3 = Category.create(uuid: SecureRandom.uuid, title: "Mac OSX")
 		@category_4 = Category.create(uuid: SecureRandom.uuid, title: "Schoolsoft")
 		@category_5 = Category.create(uuid: SecureRandom.uuid, title: "Adobe")
 		@category_6 = Category.create(uuid: SecureRandom.uuid, title: "Microsoft Office")
-		@category_7 = Category.create(uuid: SecureRandom.uuid, title: "Hårdvara")
+		@category_7 = Category.create(uuid: SecureRandom.uuid, title: "Hardware")
 	end
 
 	def self.issues!

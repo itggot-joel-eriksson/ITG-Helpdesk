@@ -262,19 +262,24 @@ body {
             transform-origin: bottom center;
 }
 
-.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(1), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(3) {
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(1), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(4) {
     -webkit-animation-delay: 0.1s;
             animation-delay: 0.1s;
 }
 
-.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(2), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(2) {
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(2), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(3) {
     -webkit-animation-delay: 0.2s;
             animation-delay: 0.2s;
 }
 
-.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(3), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(1) {
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(3), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(2) {
     -webkit-animation-delay: 0.3s;
             animation-delay: 0.3s;
+}
+
+.mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options a:nth-of-type(4), .mdl-button--fab_flinger-container.is-not-showing-options .mdl-button--fab_flinger-options a:nth-of-type(1) {
+    -webkit-animation-delay: 0.4s;
+            animation-delay: 0.4s;
 }
 
 .mdl-button--fab_flinger-container .mdl-button--fab_flinger-options {

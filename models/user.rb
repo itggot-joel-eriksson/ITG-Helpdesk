@@ -7,8 +7,11 @@ class User
     property :serial_number, String, unique: true
     property :custom_email, String, format: :email_address
     property :name, String
+    property :given_name, String
+    property :family_name, String
     property :avatar, URI
     property :blocked, Boolean, default: false
+    property :active, Boolean, default: false
     property :permission, Enum[:student, :teacher, :admin], default: :student
     property :created_at, EpochTime
 

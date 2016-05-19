@@ -1,5 +1,4 @@
 $(function() {
-    // $("#create-issue").replaceWith("<button id='create-issue' class='mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='material-icons'>add</span></button>");
     $("textarea").autogrow();
 
     $(".delete-issue").on("submit", function(event) {

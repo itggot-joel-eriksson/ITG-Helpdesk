@@ -30,33 +30,26 @@
     .mdl-card__title
         h2.mdl-card__title-text Users
     .mdl-card__supporting-text
-        .mdl-list
-            - letters_one = []
-            - for user_one in @users_one["users"]
-                - letter = user_one["name"]["givenName"][0].downcase
-                - unless letters_one.include?(letter)
-                    p id=letter = letter.upcase
-                    - letters_one << letter
-                .mdl-list__item.mdl-list__item--two-line
-                    span.mdl-list__item-primary-content
-                        - if user_one.has_key?("thumbnailPhotoUrl")
-                            img.mdl-list__item-avatar src="#{user_one["thumbnailPhotoUrl"]}" alt=user_one["name"]["fullName"] style="background-color: #FFFFFF;"
-                        - else
-                            img.mdl-list__item-avatar src="/img/avatar/#{Random.rand(7)}.png" alt=user_one["name"]["fullName"] style="background-color: #FFFFFF;"
-                        span= user_one["name"]["fullName"]
-                        a.mdl-list__item-sub-title href="mailto:#{user_one["primaryEmail"]}"= user_one["primaryEmail"]
-            - letters_two = []
-            - letters_two << @users_one_last_letter
-            - for user_two in @users_two["users"]
-                - letter = user_two["name"]["givenName"][0].downcase
-                - unless letters_two.include?(letter)
-                    p id=letter = letter.upcase
-                    - letters_two << letter
-                .mdl-list__item.mdl-list__item--two-line id=letter
-                    span.mdl-list__item-primary-content
-                        - if user_two.has_key?("thumbnailPhotoUrl")
-                            img.mdl-list__item-avatar src="#{user_two["thumbnailPhotoUrl"]}" alt=user_two["name"]["fullName"] style="background-color: #FFFFFF;"
-                        - else
-                            img.mdl-list__item-avatar src="/img/avatar/#{Random.rand(7)}.png" alt=user_two["name"]["fullName"] style="background-color: #FFFFFF;"
-                        span= user_two["name"]["fullName"]
-                        a.mdl-list__item-sub-title href="mailto:#{user_two["primaryEmail"]}"= user_two["primaryEmail"]
+        form.mdl-list
+            - if @users.empty?
+                h4
+                    | No users have been synced from Google!
+                p
+                    | To sync users from Google click the add button in the bottom right corner or click&nbsp;
+                    a href="/users/sync" here.
+            - else
+                - letters = []
+                - for user in @users
+                    - letter = user.given_name[0].downcase
+                    - unless letters.include?(letter)
+                        p id=letter = letter.upcase
+                        - letters << letter
+                    .mdl-list__item.mdl-list__item--two-line
+                        span.mdl-list__item-primary-content
+                            img.mdl-list__item-avatar src=user.avatar alt=user.name style="background-color: #FFFFFF;"
+                            span= user.name
+                            a.mdl-list__item-sub-title href="mailto:#{user.email}"= user.email
+                        span.mdl-list__item-secondary-content
+                            label.mdl-switch.mdl-js-switch.mdl-js-ripple-effect for="switch-#{user.uuid}"
+                                input.mdl-switch__input id="switch-#{user.uuid}" type="checkbox" /
+                                span.mdl-switch__label

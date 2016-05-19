@@ -5,5 +5,6 @@ def throw_error(app:, code: nil, message: nil, layout: true)
         status_message << "#{word.capitalize} "
     end
     @error = {code: code, message: status_message}
+    @layout = layout
     app.slim :error, layout: layout
 end

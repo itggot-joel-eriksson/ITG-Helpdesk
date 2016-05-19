@@ -11,16 +11,16 @@ html
         title ITG-Helpdesk
 
         - if @user.permission == :admin
-            link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-pink.min.css"
+            link rel="stylesheet" href="/css/material.blue-pink.min.css"
 
         - elsif @user.permission == :teacher
-            link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css"
+            link rel="stylesheet" href="/css/material.indigo-pink.min.css"
 
         - elsif @user.blocked && @user.permission == :student
-            link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.red-pink.min.css"
+            link rel="stylesheet" href="/css/material.red-pink.min.css"
 
         - else
-            link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.teal-pink.min.css"
+            link rel="stylesheet" href="/css/material.teal-pink.min.css"
         link rel="stylesheet" href="/css/style.css"
 
         link rel="apple-touch-icon" sizes="57x57" href="/img/favicons/apple-touch-icon-57x57.png"
@@ -53,7 +53,6 @@ html
                 .mdl-layout__header-row
                     span.mdl-layout-title
                         a.link--no-styling href="/"
-                            / img.logo src="/img/itg_logo.svg"
                             | ITG-Helpdesk
                     .mdl-layout-spacer
                     nav.mdl-navigation.mdl-layout--large-screen-only
@@ -103,12 +102,14 @@ html
                                     a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/users"
                                         span.material-icons people
                                     - if @user.permission == :admin
-                                        a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/add/users"
+                                        a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/users/add"
                                             span.material-icons person_add
+                                        a.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect href="/users/sync"
+                                            span.material-icons sync
                         - else
                             #fab_ctn.mdl-button--fab_flinger-container
                                 a#create-issue.mdl-button.mdl-js-button.mdl-button--fab.mdl-js-ripple-effect.mdl-button--colored href="/create/issue"
-                                    span.material-icons assignment_late
+                                    span.material-icons add
 
                 footer.mdl-mini-footer
                     .mdl-mini-footer__left-section
@@ -116,7 +117,7 @@ html
                         ul.mdl-mini-footer__link-list
                             li
                                 a href="https://github.com/itggot-joel-eriksson" target="_blank" Copyright &copy; 2016 Joel Eriksson
-                            li
-                                a href="#" Help
-                            li
-                                a href="/conditions" Privacy &amp; Terms
+                            / li
+                            /     a href="#" Help
+                            / li
+                            /     a href="/conditions" Privacy &amp; Terms
