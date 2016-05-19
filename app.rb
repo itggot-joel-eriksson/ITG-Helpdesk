@@ -212,9 +212,9 @@ class App < Sinatra::Base
     get "/users/?" do
         return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin || @user.permission == :teacher
 
-        @admins = User.all(permission: :admin, :order => [ :name.asc ])
-        @teachers = User.all(permission: :teacher, :order => [ :name.asc ])
-        @students = User.all(permission: :student, :order => [ :name.asc ])
+        @admins = User.all(active: true, permission: :admin, :order => [ :name.asc ])
+        @teachers = User.all(active: true, permission: :teacher, :order => [ :name.asc ])
+        @students = User.all(active: true, permission: :student, :order => [ :name.asc ])
 
         slim :users
     end
