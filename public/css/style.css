@@ -70,8 +70,12 @@ body {
 }
 
 .card-wide.mdl-card {
-    margin: 15px auto;
+    margin: auto;
     width: 50%;
+}
+
+.card-wide.mdl-card:not(:first-child) {
+    margin: 15px auto;
 }
 
 .fix-height {
@@ -99,7 +103,8 @@ body {
 
 .page-content {
     position: relative;
-    min-height: calc(100% - 180px);
+    min-height: calc(100% - 195px);
+    padding-top: 15px;
 }
 
 .link--no-styling {
@@ -190,6 +195,10 @@ body {
 
 .text-align--center {
     text-align: center;
+}
+
+.mdl-mini-footer {
+    margin-top: 15px;
 }
 
 @media (min-height: 416px) {
