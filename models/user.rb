@@ -49,9 +49,9 @@ class User
         app.session.destroy
     end
 
-    def self.delete(app:, user:, params:)
+    def self.delete(app:, user:, uuid:)
         return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
-        remove_user = User.first(uuid: params[:user])
+        remove_user = User.first(uuid: uuid)
         if remove_user
             if remove_user.permission == :admin
                 app.flash[:tab] = :admins
@@ -62,13 +62,9 @@ class User
                 app.flash[:tab] = :students
             end
 
-            # remove files
-            # remove settings
-            # remove events
+            Event.all(user_id: user.id).destroy!
             # if remove_user is an admin make another admin delete that admin as well
             Issue.delete_all(app: self, user: user, user_id: remove_user.id)
-            # Issue.all(user_id: remove_user.id).destroy!
-            # Attachment.all(user_id: remove_user.id).destroy!
             remove_user.destroy!
         else
             return throw_error(app: self, code: 404, message: "not found")

@@ -2,7 +2,7 @@
     .mdl-card__title
         h2.mdl-card__title-text Editing issue
     .mdl-card__supporting-text
-        form action="/edit/issue" method="post" enctype="multipart/form-data"
+        form action="/issue/edit" method="post" enctype="multipart/form-data"
             .mdl-grid
                 - for category in @categories
                     .mdl-cell.mdl-cell--4-col
@@ -28,5 +28,4 @@
                 .files-to-upload No file chosen
             br
             button.mdl-button.mdl-js-button.mdl-js-ripples.mdl-button--raised.mdl-button--accent
-                | Create issue
-    .mdl-card__menu
+                | Save changes

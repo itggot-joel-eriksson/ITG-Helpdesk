@@ -1,3 +1,6 @@
+# Routes
+# Resource/[Filter]/[identifier|view]
+
 class App < Sinatra::Base
     enable :sessions
     use Rack::Flash
@@ -84,49 +87,37 @@ class App < Sinatra::Base
     get "/issues/?" do
         if @user.permission == :admin
             @assigned_issues, @unassigned_issues = [], []
-            @unsolved_issues = Issue.all(closed: false)
-            @solved_issues = Issue.all(closed: true)
+            @open_issues = Issue.all(closed: false)
+            @closed_issues = Issue.all(closed: true)
             @issues = Issue.all(order: [:updated_at.asc])
         else
-            @unsolved_issues = Issue.all(user_id: @user.id, closed: false)
-            @solved_issues = Issue.all(user_id: @user.id, closed: true)
+            @open_issues = Issue.all(user_id: @user.id, closed: false)
+            @closed_issues = Issue.all(user_id: @user.id, closed: true)
         end
         slim :issues
     end
 
     # List all issues that has a certain category
-    get "/view/category/:title/issues/?" do |title|
+    get "/issues/category/:title/?" do |title|
         @category = Category.first(title: title)
         return throw_error(app: self, code: 404, message: "not found") unless @category
 
         if @user.permission == :admin
             @assigned_issues = @category.issues
             @unassigned_issues = @category.issues
-            @unsolved_issues = @category.issues(closed: false)
-            @solved_issues = @category.issues(closed: true)
+            @open_issues = @category.issues(closed: false)
+            @closed_issues = @category.issues(closed: true)
             @issues = Issue.all
         else
-            @unsolved_issues = @category.issues(user_id: @user.id, closed: false)
-            @solved_issues = @category.issues(user_id: @user.id, closed: true)
+            @open_issues = @category.issues(user_id: @user.id, closed: false)
+            @closed_issues = @category.issues(user_id: @user.id, closed: true)
         end
 
         slim :category_issues
     end
 
-    # Read an issue along with its attachments and categories
-    get "/view/issue/:uuid/?" do |uuid|
-        @issue = Issue.first(uuid: uuid)
-        if @issue
-            @description = Kramdown::Document.new(@issue.description, :input => 'markdown').to_html
-            @attachments = Attachment.all(issue_id: @issue.id)
-            slim :issue
-        else
-            return throw_error(app: self, code: 404, message: "not found")
-        end
-    end
-
     # Show the interface for creating an issue
-    get "/create/issue/?" do
+    get "/issue/report/?" do
         return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
         @categories = Category.all(order: [:title.asc])
@@ -134,7 +125,7 @@ class App < Sinatra::Base
     end
 
     # Report the issue to the database
-    post "/create/issue/?" do
+    post "/issue/report/?" do
         return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
         issue = Issue.report(app: self, user: @user, params: params)
@@ -148,8 +139,20 @@ class App < Sinatra::Base
         end
     end
 
+    # Read an issue along with its attachments and categories
+    get "/issue/:uuid/?" do |uuid|
+        @issue = Issue.first(uuid: uuid)
+        if @issue
+            @description = Kramdown::Document.new(@issue.description, :input => 'markdown').to_html
+            @attachments = Attachment.all(issue_id: @issue.id)
+            slim :issue
+        else
+            return throw_error(app: self, code: 404, message: "not found")
+        end
+    end
+
     # Show the interface to edit an issue
-    get "/edit/issue/:uuid" do |uuid|
+    get "/issue/:uuid/edit/?" do |uuid|
         return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
         @issue = Issue.first(uuid: uuid)
@@ -161,7 +164,7 @@ class App < Sinatra::Base
     end
 
     # Update the database with edits made to an issue
-    post "/edit/issue/?" do
+    post "/issue/edit/?" do
         return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
         issue = Issue.first(uuid: params[:issue])
@@ -169,17 +172,26 @@ class App < Sinatra::Base
     end
 
     # Delete an issue along with its attachments from database and filesystem
-    post "/delete/issue/?" do
+    post "/issue/delete/?" do
         return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
         Issue.delete(app: self, user: @user, params: params)
         redirect "/issues"
     end
 
-    post "/edit/issue/solved" do
+    # Close an issue
+    post "/issue/:uuid/close" do |uuid|
         return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
 
-        Issue.close(app: self, user: @user, params: params)
+        Issue.close(app: self, user: @user, uuid: uuid)
+        redirect "/issues"
+    end
+
+    # Reopen an issue
+    post "/issue/:uuid/open" do |uuid|
+        return throw_error(app: self, code: 403, message: "forbidden") if @user.blocked && !@user.permission == :admin && !@user.permission == :teacher
+
+        Issue.open(app: self, user: @user, uuid: uuid)
         redirect "/issues"
     end
 
@@ -190,7 +202,7 @@ class App < Sinatra::Base
     end
 
     # Read a faq article along with its attachments and categories
-    get "/view/faq/:uuid/?" do |uuid|
+    get "/faq/:uuid/?" do |uuid|
         @article = Faq.first(uuid: uuid)
         return throw_error(app: self, code: 404, message: "not found") unless @article
 
@@ -198,8 +210,13 @@ class App < Sinatra::Base
         slim :faq_article
     end
 
-    post "/delete/faq/?" do
+    # Delete an FAQ article
+    post "/faq/delete/?" do
+        return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
+
         faq = Faq.delete(app: self, user: @user, params: params)
+        return throw_error(app: self, code: 404, message: "not found") unless faq
+
         redirect "/faq"
     end
 
@@ -270,18 +287,14 @@ class App < Sinatra::Base
     end
 
     # Delete a user along with everything made by that user
-    post "/delete/user/?" do
+    post "/user/:uuid/delete/?" do |uuid|
         return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
 
-        User.delete(app: self, user: @user, params: params)
+        User.delete(app: self, user: @user, uuid: uuid)
         redirect "/users"
     end
 
-    # Other
-    get "/conditions/?" do
-        slim :conditions
-    end
-
+    # Handle errors
     error do
         @error = env["sinatra.error"]
         @layout = false

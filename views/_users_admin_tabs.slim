@@ -12,7 +12,7 @@
                         img.mdl-list__item-avatar src=student.avatar alt=student.name style="background-color: #FFFFFF;"
                         a href="/user/#{student.uuid}"= student.name
                         a.mdl-list__item-sub-title href="mailto:#{student.email}"= student.email
-                    form.delete-user.issue-form action="/delete/user" method="post" style="display: inline-block;"
+                    form.delete-user.issue-form action="/user/#{student.uuid}/delete" method="post" style="display: inline-block;"
                         input.hidden type="text" name="user" value=student.uuid
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="1delete_#{student.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="1delete_#{student.uuid}" Remove user
@@ -30,8 +30,7 @@
                         img.mdl-list__item-avatar src=teacher.avatar alt=teacher.name style="background-color: #FFFFFF;"
                         a href="/user/#{teacher.uuid}"= teacher.name
                         a.mdl-list__item-sub-title href="mailto:#{teacher.email}"= teacher.email
-                    form.delete-user.issue-form action="/delete/user" method="post" style="display: inline-block;"
-                        input.hidden type="text" name="user" value=teacher.uuid
+                    form.delete-user.issue-form action="/user/#{teacher.uuid}/delete" method="post" style="display: inline-block;"
                         input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="2delete_#{teacher.uuid}" type="submit" value="delete"
                     .mdl-tooltip for="2delete_#{teacher.uuid}" Remove user
 #admins-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :admins}"
@@ -48,9 +47,9 @@
                         img.mdl-list__item-avatar src=admin.avatar alt=admin.name style="background-color: #FFFFFF;"
                         a href="/user/#{admin.uuid}"= admin.name
                         a.mdl-list__item-sub-title href="mailto:#{admin.email}"= admin.email
-                    span.material-icons.mdl-color-text--primary-dark id="3delete_#{admin.uuid}" verified_user
-                    .mdl-tooltip for="3delete_#{admin.uuid}" Admin
-                    / form.issue-form action="/delete/user" method="post" style="display: inline-block;"
+                    span.material-icons.mdl-color-text--primary-dark id="admin_#{admin.uuid}" verified_user
+                    .mdl-tooltip for="admin_#{admin.uuid}" Admin
+                    / form.issue-form action="/user/#{admin.uuid}/delete" method="post" style="display: inline-block;"
                     /     input.hidden type="text" name="user" value=admin.uuid
                     /     input.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.material-icons id="3delete_#{admin.uuid}" type="submit" value="delete"
                     / .mdl-tooltip for="3delete_#{admin.uuid}" Remove user

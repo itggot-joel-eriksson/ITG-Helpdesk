@@ -15,6 +15,7 @@ class Seeder
 		User.create(uuid: SecureRandom.uuid, name: "Teddy Henriksson", given_name: "Teddy", family_name: "Henriksson", avatar: "https://camo.githubusercontent.com/35ffde5283c9d871d4865cab96e32fe1f1c06884/68747470733a2f2f692e696d6775722e636f6d2f33324a6f43516c2e6a7067", active: true, email: "teddy.henriksson@itggot.se", permission: :admin)
 		User.create(uuid: SecureRandom.uuid, name: "Lydia Hedlund", given_name: "Lydia", family_name: "Hedlund", avatar: "https://camo.githubusercontent.com/800ceaf38d9ee0a77af0888b230347d77e1722e4/68747470733a2f2f692e696d6775722e636f6d2f326851457a59322e6a7067", active: true, email: "lydia.hedlund@itggot.se", permission: :teacher)
 		User.create(uuid: SecureRandom.uuid, name: "Eddie Lindgren", given_name: "Eddie", family_name: "Lindgren", avatar: "https://camo.githubusercontent.com/60af6b29ec18c44f1cee896312d62a3e79e7359a/68747470733a2f2f692e696d6775722e636f6d2f346a6c573563502e6a7067", active: true, email: "eddie.lindgren@itggot.se", permission: :admin)
+		User.create(uuid: SecureRandom.uuid, name: "Daniel Berg", given_name: "Daniel", family_name: "Berg", active: true, email: "daniel.berg1@itggot.se", avatar: "http://it-gymnasiet.se/wp-content/uploads/2014/08/berg-150x150.jpg", permission: :teacher)
 	end
 
 	def self.categories!

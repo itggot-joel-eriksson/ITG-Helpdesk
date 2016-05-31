@@ -52,28 +52,23 @@
                 - unless Attachment.web_image?(attachment.file)
                     .mdl-tooltip for=File.basename(attachment.file) #{File.basename(attachment.file)}
         - for category in @issue.categories
-            p
-                a href="/view/category/#{category.title}/issues"= category.title
+            a href="/issues/category/#{category.title}" class="mdl-button mdl-js-button mdl-button--accent" = category.title
     .mdl-card__actions.mdl-card--border
         - unless @issue.closed || !@user.blocked || @user.permission == :admin || @user.permission == :teacher
             a.issue-form.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect href="/edit/issue/#{@issue.uuid}"
                 | Edit
         - if @issue.closed
             - if !@user.blocked || @user.permission == :admin || @user.permission == :teacher
-                form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
-                    input.hidden type="text" name="issue" value=@issue.uuid
-                    input.hidden type="text" name="solved" value="n"
+                form.issue-form action="/issue/#{@issue.uuid}/open" method="post" style="display: inline-block;"
                     input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Reopen issue"
 
         - else
             - if !@user.blocked || @user.permission == :admin || @user.permission == :teacher
-                form.issue-form action="/edit/issue/solved" method="post" style="display: inline-block;"
-                    input.hidden type="text" name="issue" value=@issue.uuid
-                    input.hidden type="text" name="solved" value="y"
+                form.issue-form action="/issue/#{@issue.uuid}/close" method="post" style="display: inline-block;"
                     input.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect type="submit" value="Close issue"
 
         - if @user.permission == :admin
-            form.delete-issue.issue-form action="/delete/issue" method="post" style="display: inline-block;"
+            form.delete-issue.issue-form action="/issue/delete" method="post" style="display: inline-block;"
                 input.hidden type="text" name="issue" value=@issue.uuid
                 input.mdl-button.mdl-button--accent.mdl-js-button.mdl-js-ripple-effect type="submit" value="Delete"
 
@@ -102,20 +97,3 @@
                             img.mdl-list__item-avatar src=event.user.avatar alt=event.user.name style="background-color: #FFFFFF;"
                             span #{event.user.name} #{action}
                             span.mdl-list__item-sub-title= event.created_at.for_humans
-
-- if flash[:success]
-    #snackbar.mdl-js-snackbar.mdl-snackbar
-        .mdl-snackbar__text
-        button.mdl-snackbar__action type="button"
-
-    javascript:
-        function success() {
-            var snackbarContainer = $("#snackbar").get(0);
-            var data = {
-                message: "Your issue has been reported",
-                timeout: 3000,
-            };
-            snackbarContainer.MaterialSnackbar.showSnackbar(data);
-        }
-        componentHandler.upgradeElement($("#snackbar").get(0));
-        setTimeout(success, 500);

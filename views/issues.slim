@@ -11,9 +11,9 @@
             a.mdl-tabs__tab href="#all-issues-panel" All
         - else
             a.mdl-tabs__tab href="#unsolved-issues-panel" class="#{"is-active" if flash[:tab] == :open || flash[:tab] == nil}"
-                span.mdl-badge.mdl-badge--overlap data-badge=@unsolved_issues.count Open issues
+                span.mdl-badge.mdl-badge--overlap data-badge=@open_issues.count Open issues
             a.mdl-tabs__tab href="#solved-issues-panel" class="#{"is-active" if flash[:tab] == :closed}"
-                span.mdl-badge.mdl-badge--overlap data-badge=@solved_issues.count Closed issues
+                span.mdl-badge.mdl-badge--overlap data-badge=@closed_issues.count Closed issues
     .mdl-card__supporting-text
         - if @user.permission == :admin
             == partial "_issues_admin_tabs"

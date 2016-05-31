@@ -1,33 +1,33 @@
 #unsolved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :open || flash[:tab] == nil}"
-    - if @unsolved_issues.empty?
+    - if @open_issues.empty?
         h4 There are no open issues!
         p
             | To report an issue click the add button in the bottom right corner or click&nbsp;
-            a href="/create/issue" here.
+            a href="/issue/report" here.
     - else
         noscript
             h4 Open issues
-        - for issue in @unsolved_issues
+        - for issue in @open_issues
             .mdl-list
                 .mdl-list__item
-                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                    a.mdl-list__item-primary-content href="/issue/#{issue.uuid}"
                         img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
                         span= issue.title
-                    a.mdl-list__item-secondary-action.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.mdl-color-text--primary href="/edit/issue/#{issue.uuid}"
+                    a.mdl-list__item-secondary-action.mdl-button.mdl-js-button.mdl-button--icon.mdl-button--accent.mdl-color-text--primary href="/issue/#{issue.uuid}/edit"
                         span.material-icons mode_edit
 #solved-issues-panel.mdl-tabs__panel class="#{"is-active" if flash[:tab] == :closed}"
-    - if @solved_issues.empty?
+    - if @closed_issues.empty?
         h4 There are no closed issues!
         p
             | To report an issue click the add button in the bottom right corner or click&nbsp;
-            a href="/create/issue" here.
+            a href="/issue/report" here.
     - else
         noscript
             h4 Closed issues
-        - for issue in @solved_issues
+        - for issue in @closed_issues
             .mdl-list
                 .mdl-list__item
-                    a.mdl-list__item-primary-content href="/view/issue/#{issue.uuid}"
+                    a.mdl-list__item-primary-content href="/issue/#{issue.uuid}"
                         img.mdl-list__item-avatar src=issue.user.avatar alt=issue.user.name style="background-color: #FFFFFF;"
                         span= issue.title
                     a.mdl-list__item-secondary-action href="#"

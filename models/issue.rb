@@ -44,8 +44,6 @@ class Issue
 		issue = Issue.first(uuid: params[:issue])
 		return throw_error(app: self, code: 404, message: "not found") unless issue
 
-		# Depending on where the issue was removed from add a flash to that tab
-
 		if issue.attachments
 			issue.attachments.each do |attachment|
 				file = "uploads/#{user.uuid}/#{File.basename(attachment.file)}"
@@ -74,24 +72,27 @@ class Issue
 					end
 				end
 			end
-			issue.attachments.destroy
-			issue.category_issues.destroy
+			issue.attachments.destroy!
+			issue.category_issues.destroy!
 			issue.destroy!
 		end
 	end
 
-	def self.close(app:, user:, params:)
-		issue = Issue.first(uuid: params[:issue])
+	def self.close(app:, user:, uuid:)
+		issue = Issue.first(uuid: uuid)
 		return throw_error(app: self, code: 404, message: "not found") unless issue
 
-		if params[:solved] == "y"
-			issue.update(closed: true)
-			Event.create(uuid: SecureRandom.uuid, type: :close, user_id: user.id, issue_id: issue.id)
-			app.flash[:tab] = :closed
-		elsif params[:solved] == "n"
-			issue.update(closed: false)
-			Event.create(uuid: SecureRandom.uuid, type: :reopen, user_id: user.id, issue_id: issue.id)
-			app.flash[:tab] = :open
-		end
+		issue.update(closed: true)
+		Event.create(uuid: SecureRandom.uuid, type: :close, user_id: user.id, issue_id: issue.id)
+		app.flash[:tab] = :closed
+	end
+
+	def self.open(app:, user:, uuid:)
+		issue = Issue.first(uuid: uuid)
+		return throw_error(app: self, code: 404, message: "not found") unless issue
+
+		issue.update(closed: false)
+		Event.create(uuid: SecureRandom.uuid, type: :reopen, user_id: user.id, issue_id: issue.id)
+		app.flash[:tab] = :open
 	end
 end

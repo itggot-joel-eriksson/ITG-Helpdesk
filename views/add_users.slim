@@ -1,31 +1,3 @@
-.letterlist
-    a.link--no-styling.letter href="#a" A
-    a.link--no-styling.letter href="#b" B
-    a.link--no-styling.letter href="#c" C
-    a.link--no-styling.letter href="#d" D
-    a.link--no-styling.letter href="#e" E
-    a.link--no-styling.letter href="#f" F
-    a.link--no-styling.letter href="#g" G
-    a.link--no-styling.letter href="#h" H
-    a.link--no-styling.letter href="#i" I
-    a.link--no-styling.letter href="#j" J
-    a.link--no-styling.letter href="#k" K
-    a.link--no-styling.letter href="#l" L
-    a.link--no-styling.letter href="#m" M
-    a.link--no-styling.letter href="#n" N
-    a.link--no-styling.letter href="#o" O
-    a.link--no-styling.letter href="#p" P
-    a.link--no-styling.letter href="#q" Q
-    a.link--no-styling.letter href="#r" R
-    a.link--no-styling.letter href="#s" S
-    a.link--no-styling.letter href="#t" T
-    a.link--no-styling.letter href="#u" U
-    a.link--no-styling.letter href="#v" V
-    a.link--no-styling.letter href="#w" W
-    a.link--no-styling.letter href="#x" X
-    a.link--no-styling.letter href="#y" Y
-    a.link--no-styling.letter href="#z" Z
-
 .card-wide.mdl-card.mdl-shadow--2dp.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
     .mdl-card__title
         h2.mdl-card__title-text Users
@@ -53,3 +25,7 @@
                             label.mdl-switch.mdl-js-switch.mdl-js-ripple-effect for="switch-#{user.uuid}"
                                 input.mdl-switch__input id="switch-#{user.uuid}" type="checkbox" /
                                 span.mdl-switch__label
+- if letters
+    .letterlist
+        - for letter in letters
+            a.link--no-styling.letter href="##{letter}"= letter.upcase
