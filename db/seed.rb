@@ -52,7 +52,7 @@ class Seeder
 
 	def self.faq_articles!
 		Faq.create(uuid: SecureRandom.uuid, question: "Can’t I just fit an intruder alarm myself?", answer: "Yes, you can, but an experienced engineer will carry out an extensive survey of the site or property they are alarming to ensure that they fit the most appropriate alarm. They will also identify areas that require securing that you may not think of yourself.", user_id: 4)
-		Faq.create(uuid: SecureRandom.uuid, question: "Is CCTV worth the cost?", answer: "Evidence suggests that it is a very effective deterrent against crimes being committed. It can also provide additional benefits to businesses, such as tracking footfall in a shop and ensuring staff are doing their jobs properly.", user_id: 5)
+		Faq.create(uuid: SecureRandom.uuid, question: "Is CCTV worth the cost?", answer: "Evidence suggests that it is a very effective deterrent against crimes being committed. It can also provide additional benefits to businesses, such as tracking footfall in a shop and ensuring staff are doing their jobs properly.", user_id: 4)
 		Faq.create(uuid: SecureRandom.uuid, question: "How messy will it be to have an alarm fitted?", answer: "The process will inevitably generate some dust from drilling, but our engineers and fitters will take every possible precaution to ensure that your property is left clean by laying dust sheets on floors and nearby surfaces and objects. They will also bring their own cleaning equipment with them to tidy up after themselves afterwards. If you have our CCTV system, you can keep an eye on them to see how professional they are!", user_id: 4)
 	end
 

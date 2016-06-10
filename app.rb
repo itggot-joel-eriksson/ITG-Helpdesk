@@ -197,7 +197,7 @@ class App < Sinatra::Base
 
     # List all FAQ articles
     get "/faq/?" do
-        @articles = Faq.all
+        @articles = Faq.all(published: true)
         slim :faq
     end
 
@@ -289,6 +289,7 @@ class App < Sinatra::Base
     # Delete a user along with everything made by that user
     post "/user/:uuid/delete/?" do |uuid|
         return throw_error(app: self, code: 403, message: "forbidden") unless @user.permission == :admin
+        return throw_error(app: self, code: 403, message: "forbidden") if uuid == @user.uuid
 
         User.delete(app: self, user: @user, uuid: uuid)
         redirect "/users"

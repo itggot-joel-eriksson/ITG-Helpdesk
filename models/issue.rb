@@ -39,10 +39,10 @@ class Issue
 	end
 
 	def self.delete(app:, user:, params:)
-		return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
+		return throw_error(app: app, code: 403, message: "forbidden") unless user.permission == :admin
 
 		issue = Issue.first(uuid: params[:issue])
-		return throw_error(app: self, code: 404, message: "not found") unless issue
+		return throw_error(app: app, code: 404, message: "not found") unless issue
 
 		if issue.attachments
 			issue.attachments.each do |attachment|
@@ -58,10 +58,10 @@ class Issue
 	end
 
 	def self.delete_all(app:, user:, user_id:)
-		return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
+		return throw_error(app: app, code: 403, message: "forbidden") unless user.permission == :admin
 
 		issues = Issue.all(user_id: user_id)
-		return throw_error(app: self, code: 404, message: "not found") unless issues
+		return throw_error(app: app, code: 404, message: "not found") unless issues
 
 		issues.each do |issue|
 			if issue.attachments
@@ -80,7 +80,7 @@ class Issue
 
 	def self.close(app:, user:, uuid:)
 		issue = Issue.first(uuid: uuid)
-		return throw_error(app: self, code: 404, message: "not found") unless issue
+		return throw_error(app: app, code: 404, message: "not found") unless issue
 
 		issue.update(closed: true)
 		Event.create(uuid: SecureRandom.uuid, type: :close, user_id: user.id, issue_id: issue.id)
@@ -89,7 +89,7 @@ class Issue
 
 	def self.open(app:, user:, uuid:)
 		issue = Issue.first(uuid: uuid)
-		return throw_error(app: self, code: 404, message: "not found") unless issue
+		return throw_error(app: app, code: 404, message: "not found") unless issue
 
 		issue.update(closed: false)
 		Event.create(uuid: SecureRandom.uuid, type: :reopen, user_id: user.id, issue_id: issue.id)

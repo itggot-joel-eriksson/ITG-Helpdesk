@@ -50,24 +50,25 @@ class User
     end
 
     def self.delete(app:, user:, uuid:)
-        return throw_error(app: self, code: 403, message: "forbidden") unless user.permission == :admin
+        return throw_error(app: app, code: 403, message: "forbidden") unless user.permission == :admin
         remove_user = User.first(uuid: uuid)
         if remove_user
             if remove_user.permission == :admin
                 app.flash[:tab] = :admins
-                return throw_error(app: self, code: 400, message: "bad request") if User.all(permission: :admin).count <= 1
+                return throw_error(app: app, code: 400, message: "bad request") if User.all(permission: :admin).count <= 1
             elsif remove_user.permission == :teacher
                 app.flash[:tab] = :teachers
             else
                 app.flash[:tab] = :students
             end
 
-            Event.all(user_id: user.id).destroy!
+            Event.all(user_id: remove_user.id).destroy!
             # if remove_user is an admin make another admin delete that admin as well
-            Issue.delete_all(app: self, user: user, user_id: remove_user.id)
-            remove_user.destroy!
+            Faq.all(user_id: remove_user.id).update(published: false, user_id: user.id)
+            Issue.delete_all(app: app, user: user, user_id: remove_user.id)
+            return remove_user.destroy!
         else
-            return throw_error(app: self, code: 404, message: "not found")
+            return throw_error(app: app, code: 404, message: "not found")
         end
     end
 end

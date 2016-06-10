@@ -5,6 +5,7 @@ class Faq
     property :uuid, String, required: true, unique: true
     property :question, Text, required: true
     property :answer, Text, required: true
+    property :published, Boolean, default: true
     property :created_at, EpochTime
 
     belongs_to :user

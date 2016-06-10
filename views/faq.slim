@@ -3,15 +3,13 @@
         h2.mdl-card__title-text FAQ
     .mdl-card__supporting-text
         .mdl-list
-            - for article in @articles
-                .mdl-list__item
-                    span.mdl-list__item-primary-content
-                        - if article.user.avatar == nil
-                            span.material-icons.mdl-list__item-avatar person
-                        - else
+            - if @articles.empty?
+                h4 There are no FAQ articles
+            - else
+                - for article in @articles
+                    .mdl-list__item
+                        span.mdl-list__item-primary-content
                             img.mdl-list__item-avatar src=article.user.avatar alt=article.user.name style="background-color: #FFFFFF;"
-                        a href="/faq/#{article.uuid}" = article.question
-                    a.mdl-list__item-secondary-action href="#"
-                        i.material-icons star
-    .mdl-card__menu
-        / button.mdl-button.mdl-button--icon.mdl-js-button.mdl-js-ripple-effect
+                            a href="/faq/#{article.uuid}" = article.question
+                        a.mdl-list__item-secondary-action href="#"
+                            i.material-icons star
